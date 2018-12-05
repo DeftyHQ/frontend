@@ -1,3 +1,7 @@
+- add eslint-standard
+- add normalize.css
+- use scss and css modules
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

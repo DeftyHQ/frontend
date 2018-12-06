@@ -1,3 +1,6 @@
+- 
+- add react-router
+- add polyfill
 - add eslint-standard
 - add normalize.css
 - use scss and css modules

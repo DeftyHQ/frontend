@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import './App.scss';
+import React from 'react'
+import { Switch, Route } from 'react-router-dom'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <h1>Welcome to the starter kit</h1>
-        <p>This extends CRA with:</p>
-        <ul>
-          <li>Normalize.css</li>
-          <li>Sass and CSS modules</li>
-          <li>Standardjs linting</li>
-        </ul>
-      </div>
-    );
-  }
-}
+import './App.scss'
 
-export default App;
+import Header from './Header'
+import Home from './Home'
+import Demo from './Demo'
+
+const App = () => (
+  <div>
+    <Header />
+    <Switch>
+      <Route exact path='/' component={Home}/>
+      <Route exact path='/demo' component={Demo}/>
+    </Switch>
+  </div>
+)
+
+export default App

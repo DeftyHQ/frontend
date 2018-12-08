@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const Header = () => (
   <div>
     <div className="logo">
-      <h1><Link to="/">Crypto Musings</Link></h1>
+      <h1><Link to="/">CRA Starter Kit</Link></h1>
     </div>
   </div>
 )

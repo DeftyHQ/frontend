@@ -1,9 +1,17 @@
-- 
-- add react-router
+- add .env file for absolute imports
+- use router config file
+- add react-router-dom
 - add polyfill
 - add eslint-standard
 - add normalize.css
 - use scss and css modules
+
+---------------
+- change name in manifest.json
+- change favicon
+
+
+----------------
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

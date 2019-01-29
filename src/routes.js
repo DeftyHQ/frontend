@@ -1,7 +1,6 @@
 
 import Home from './Home'
 import Demo from './Demo'
-import TxPool from './txPool'
 
 export default {
   root: { path: '/', component: Home, name: 'root' },

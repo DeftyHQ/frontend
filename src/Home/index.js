@@ -1,15 +1,23 @@
 import React from 'react'
+import { Grid, Paper } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
 import Routes from 'routes'
+import Wallet from 'Wallet'
 
-const Home = () => (
-  <div>
-    <ul>
-      <li><Link to={Routes.demo.path}>{Routes.demo.name}</Link></li>
-      <li><Link to={Routes.home.path}>{Routes.home.name}</Link></li>
-    </ul>
-  </div>
-)
+
+class Home extends React.Component {
+  render() {
+    return (
+      <Grid item md={12}>
+        <Grid item md={6}>
+          <Paper>
+            <Wallet />
+          </Paper>
+        </Grid>
+      </Grid>
+    )
+  }
+}
 
 export default Home

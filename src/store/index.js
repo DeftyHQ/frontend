@@ -1,4 +1,15 @@
-export { default as configureStore } from './store'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+
+import rootReducer from './rootReducer'
+
+export default function configureStore(initialState={}) {
+  return createStore(
+    rootReducer,
+    applyMiddleware(thunk)
+  )
+}
+
 
 /*
 Demo use of redux, react-redux, redux-thunk middleware

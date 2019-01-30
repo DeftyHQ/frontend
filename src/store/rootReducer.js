@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
-import simpleReducer from './simpleReducer'
+import { default as cups } from 'store/cupsReducer'
+import { default as auth } from 'store/web3Reducer'
 
 export default combineReducers({
-  simpleReducer
+  cups,
+  auth
 })

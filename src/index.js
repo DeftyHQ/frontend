@@ -9,10 +9,10 @@ import { Provider } from 'react-redux'
 import 'normalize.css';
 import './index.scss';
 
-
-import { configureStore } from 'store'
+import { default as configureStore } from 'store'
 import * as serviceWorker from './serviceWorker'
 import App from './App'
+
 
 ReactDOM.render(
   <Provider store={configureStore()}>

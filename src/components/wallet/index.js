@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { getWeb3 } from 'api'
 import { getUserCups } from 'store/cupsAction'
 import { initWeb3, accountChange } from 'store/web3Action'
+import { Account } from 'components'
 
 class Wallet extends React.Component {
   state = {
@@ -20,9 +21,11 @@ class Wallet extends React.Component {
 
   async getAccounts(web3) {
     const accounts = await web3.eth.getAccounts()
+    const network = await web3.eth.net.getNetworkType()
     return {
       web3,
       accounts,
+      network,
       address: accounts[0]
     }
   }
@@ -96,13 +99,10 @@ class Wallet extends React.Component {
   }
 
   render() {
-    const { cups, address, initWeb3 } = this.props
+    const { cups, address, network, initWeb3 } = this.props
     return (
       <div>
-        <div>
-          <Blockies style="{ border-radius: 50% }" seed={this.props.address} />
-          { address }
-        </div>
+        <Account address={address} network={network}/>
         <div>
           <h3>My CDP's</h3>
           { this.displayList(cups) }
@@ -118,6 +118,7 @@ const mapStateToProps = ({ cups, auth }) => {
     cups: cups.cups,
     accounts: auth.accounts,
     address: auth.address,
+    network: auth.network
   })
 }
 

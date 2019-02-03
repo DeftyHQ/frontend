@@ -1,3 +1,4 @@
+import Maker from '@makerdao/dai'
 import { request } from 'graphql-request'
 
 const config = {
@@ -28,6 +29,7 @@ const getCupsQuery = `
         lad
         art
         ink
+        tab
         ratio
         actions(first: 5) {
           nodes {

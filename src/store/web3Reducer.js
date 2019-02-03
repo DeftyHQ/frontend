@@ -15,7 +15,8 @@ export default (
         status: 'AUTH_SUCCESS',
         web3: action.payload.web3,
         accounts: action.payload.accounts,
-        address: action.payload.address
+        address: action.payload.address,
+        network: action.payload.network
       }
     case AUTH.PENDING:
       return {

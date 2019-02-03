@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid'
 import Header from './Header'
 import Routes from './routes'
 
-import './App.scss'
+import styles from './App.module.css'
 
 class App extends React.Component {
   async componentDidMount() {
@@ -25,18 +25,13 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={styles.root}>
         <Header />
-        <Grid
-          container
-          spacing={8}
-          direction="row">
-          <Switch>
-            <Route exact path={Routes.root.path} component={Routes.root.component}/>
-            <Route exact path={Routes.home.path} component={Routes.home.component}/>
-            <Route exact path={Routes.demo.path} component={Routes.demo.component}/>
-          </Switch>
-        </Grid>
+        <Switch>
+          <Route exact path={Routes.root.path} component={Routes.root.component}/>
+          <Route exact path={Routes.home.path} component={Routes.home.component}/>
+          <Route exact path={Routes.demo.path} component={Routes.demo.component}/>
+        </Switch>
       </div>
     )
   }

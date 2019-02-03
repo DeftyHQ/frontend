@@ -1,0 +1,62 @@
+
+.instructions {
+  margin-bottom: 3em !important;
+}
+
+.providerOptions {
+  background-color: #fff;
+  /* opacity: 50%; */
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.provider {
+  width: 60%;
+  font-size: 1.5rem;
+  text-align: left;
+  text-decoration: none;
+  letter-spacing: .02rem;
+  margin: 3px auto;
+  margin-bottom: 2rem;
+  border: 1px solid silver;
+  display: flex;
+}
+
+.providerAction {
+  justify-content: start !important;
+  align-items: center !important;
+  padding: 1rem 0 !important;
+}
+
+.providerIcon {
+  float: left;
+  margin-left: 1.95rem;
+  margin-right: 1.8rem;
+  display: block;
+  height: auto;
+  max-height: 21px;
+  width: 18px;
+}
+
+.disabled {
+  position: relative;
+}
+.disabled:after {
+  content: "";
+  display: block;
+  position: absolute; /* could also be absolute */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.3);
+}

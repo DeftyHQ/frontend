@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import {
   Typography,
   Button,
@@ -11,19 +10,8 @@ import trezorSVG from './trezor.svg'
 import styles from './styles.module.css'
 
 class WalletProvider extends React.Component {
-
-  connect(providerType) {
-    switch(providerType) {
-      case 'MetaMask':
-        console.log('value', this.props.hide)
-        return console.log('hello')
-      default:
-        return console.log('wrong provider')
-    }
-  }
-
   render() {
-    const { hide } = this.props
+    const { hide, selectProvider } = this.props
     if (hide) { return null }
     return (
       <div className={styles.providerOptions}>
@@ -34,7 +22,9 @@ class WalletProvider extends React.Component {
           <Button
             fullWidth
             className={styles.providerAction}
-            onClick={() => this.connect('MetaMask')}>
+            onClick={() => {
+              selectProvider('MetaMask')
+            }}>
             <img src={metamaskSVG} className={styles.providerIcon}></img>
             MetaMask
           </Button>
@@ -44,7 +34,7 @@ class WalletProvider extends React.Component {
             disabled
             fullWidth
             className={styles.providerAction}
-            onClick={() => this.connect('Ledger')}>
+            onClick={() => selectProvider('Ledger')}>
             <img src={ledgerSVG} className={styles.providerIcon}></img>
             <Typography>Ledger Nano S</Typography>
           </Button>
@@ -54,7 +44,7 @@ class WalletProvider extends React.Component {
             disabled
             fullWidth
             className={styles.providerAction}
-            onClick={() => this.connect('Trezor')}>
+            onClick={() => selectProvider('Trezor')}>
             <img src={trezorSVG} className={styles.providerIcon}></img>
             <Typography>Trezor</Typography>
           </Button>
@@ -64,13 +54,4 @@ class WalletProvider extends React.Component {
   }
 }
 
-const mapStateToProps = () => {}
-
-const mapDispatchToProps = dispatch => ({
-
-})
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WalletProvider)
+export default WalletProvider

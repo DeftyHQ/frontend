@@ -1,4 +1,3 @@
-import Web3 from "web3"
 
 export const AUTH = {
   START: 'WEB3_CONNECTION_START',
@@ -10,7 +9,7 @@ export const AUTH = {
 }
 
 export function initWeb3({ web3, address, accounts, network }) {
-  return async (dispatch) => {
+  return (dispatch) => {
     dispatch({
       type: AUTH.SUCCESS,
       payload: {

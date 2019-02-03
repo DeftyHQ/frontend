@@ -9,12 +9,16 @@ const config = {
 const URL = config.staging
 
 const getCupsQuery = `
-  query AllCups($lad: String!) {
+  query AllCups($lad: String!, $proxy: String!) {
     allCups(
       first: 50,
       condition: {
-        deleted: false,
-        lad: $lad
+        deleted: false
+      },
+      filter: {
+        lad: {
+          in: [$proxy, $lad]
+        }
       },
       orderBy: RATIO_ASC
     ) {
@@ -29,7 +33,6 @@ const getCupsQuery = `
         lad
         art
         ink
-        tab
         ratio
         actions(first: 5) {
           nodes {
@@ -42,7 +45,18 @@ const getCupsQuery = `
   }
 `
 
-export function getCups(ownerAddress) {
-  return request(URL, getCupsQuery, { lad: ownerAddress })
+export function fetchCups(account, proxy) {
+  const params = {
+    lad: account,
+    proxy: proxy
+  }
+  return request(URL, getCupsQuery, params)
     .then(data => data.allCups.nodes)
+    .then(data => (
+      data.map(node => {
+        // Mark difference between CDP's belonging to an account or a proxy
+        node.isLegacy = node.lad === params.lad ? true : false
+        return node
+      })
+    ))
 }

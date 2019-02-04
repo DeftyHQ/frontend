@@ -1,17 +1,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Blockies from 'react-blockies'
 import {
+  Button,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
+  ExpansionPanelActions,
   Typography
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import NumberFormat from 'react-number-format';
 
-import { getWeb3 } from 'api'
-import { initWeb3, accountChange } from 'store/web3Action'
+import { accountChange } from 'store/web3Action'
 import { Account, CdpCard } from 'components'
+import styles from './styles.module.css'
 
 class Wallet extends React.Component {
   state = {
@@ -27,41 +29,104 @@ class Wallet extends React.Component {
   }
 
   displayList(list) {
-    const classes = {}
 
     return list.map((cup, i) => {
       const { expanded } = this.state
       const key = `panel${i}`
       return (
-        <div key={i}>
-          <ExpansionPanel
-            expanded={expanded === key}
-            onChange={this.handleChange(key)}>
-           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-             <Typography className={classes.heading}>CDP #{cup.id}</Typography>
-             <Typography className={classes.secondaryHeading}></Typography>
-           </ExpansionPanelSummary>
-           <ExpansionPanelDetails>
-             <Typography>Collateral {cup.ink}</Typography>
-             <div>
-               <pre key={i}>{JSON.stringify(cup, null, 2)}</pre>
-             </div>
-           </ExpansionPanelDetails>
-         </ExpansionPanel>
-        </div>
+        <ExpansionPanel
+          key={key}
+          expanded={expanded === key}
+          onChange={this.handleChange(key)}>
+         <ExpansionPanelSummary
+            className={styles.cardSummary}
+            expandIcon={<ExpandMoreIcon />}>
+           <Typography
+              className={cup.isSafe ? styles.safe : styles.unsafe}>
+              #{cup.id}
+            </Typography>
+            <Typography>{cup.collateralValue.toString()}</Typography>
+         </ExpansionPanelSummary>
+         <ExpansionPanelDetails
+            className={styles.cardContent}>
+            <Typography>
+              <span className={styles.name}>Collateral</span>
+              <NumberFormat
+                value={cup.ink}
+                displayType={'text'}
+                decimalScale={2}
+                fixedDecimalScale={true}
+                thousandSeparator={true}
+                isNumericString/>
+            </Typography>
+            <Typography>
+              <span className={styles.name}>Ratio</span>
+              <NumberFormat
+                value={cup.ratio.toString()}
+                displayType={'text'}
+                decimalScale={2}
+                fixedDecimalScale={true}
+                thousandSeparator={true}
+                isNumericString/>
+            </Typography>
+            <Typography>
+              <span className={styles.name}>Art</span>
+              <span className={styles.value}>{cup.art}</span>
+            </Typography>
+            <Typography>
+              <span className={styles.name}>Debt value</span>
+              {/*<span className={styles.value}>{cup.debtValue.toString()}</span>*/}
+              <NumberFormat
+                value={cup.debtValue.toString()}
+                displayType={'text'}
+                thousandSeparator={true}
+                isNumericString/>
+            </Typography>
+            <Typography>
+              <span className={styles.name}>Collateralization ratio</span>
+              <NumberFormat
+                value={cup.collateralizationRatio.toString()}
+                displayType={'text'}
+                decimalScale={2}
+                suffix={" %"}
+                fixedDecimalScale={true}
+                thousandSeparator={true}
+                isNumericString/>
+            </Typography>
+            <Typography>
+              <span className={styles.name}>Collateral value</span>
+              <span className={styles.value}>{cup.collateralValue.toString()}</span>
+            </Typography>
+            <Typography>
+              <span className={styles.name}>Liquidation Price</span>
+              <span className={styles.value}>{cup.liquidationPrice.toString()}</span>
+            </Typography>
+         </ExpansionPanelDetails>
+         <ExpansionPanelActions>
+           {
+             cup.status === 'wrapped'
+               ? <Button size="small">Unwrap</Button>
+               : <Button size="small" color="primary">Wrap</Button>
+           }
+         </ExpansionPanelActions>
+       </ExpansionPanel>
       )
     })
   }
 
   render() {
-    const { cups, address, network, initWeb3 } = this.props
+    const { cups, address, network } = this.props
     return (
       <div>
         <Account address={address} network={network}/>
-        <div>
-          <h3>My CDP's</h3>
-          { this.displayList(cups) }
-        </div>
+        <section>
+          <div className={styles.listHeader}>
+            <Typography variant="subtitle1">My CDP's</Typography>
+          </div>
+          <div className={styles.listBody}>
+            { this.displayList(cups) }
+          </div>
+        </section>
       </div>
     )
   }

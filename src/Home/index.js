@@ -9,7 +9,10 @@ import {
 import Routes from 'routes'
 import {
   Wallet,
-  WalletProvider
+  WalletProvider,
+  CdpMarket,
+  Orders,
+  TradeHistory
 } from 'components'
 
 import { getWeb3 } from 'api'
@@ -74,13 +77,19 @@ class Home extends React.Component {
             <Row>
               <Col xs={12} md={12} lg={9}>
                 <Typography variant="h5" gutterBottom>CDP Market</Typography>
-                <Paper>Something</Paper>
+                <Paper square elevation={2}>
+                  <CdpMarket />
+                </Paper>
                 <Typography variant="h5" gutterBottom>My Orders</Typography>
-                <Paper>Something</Paper>
+                <Paper square elevation={2}>
+                  <Orders />
+                </Paper>
               </Col>
               <Col xs={12} md={12} lg={3}>
                 <Typography variant="h5" gutterBottom>Trade History</Typography>
-                <Paper>Something</Paper>
+                <Paper square elevation={2}>
+                  <TradeHistory />
+                </Paper>
               </Col>
             </Row>
           </Col>

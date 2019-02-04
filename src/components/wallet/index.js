@@ -11,46 +11,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import { getWeb3 } from 'api'
 import { initWeb3, accountChange } from 'store/web3Action'
-import { Account } from 'components'
+import { Account, CdpCard } from 'components'
 
 class Wallet extends React.Component {
   state = {
     expanded: null,
-  }
-
-  async getAccounts(web3) {
-    const accounts = await web3.eth.getAccounts()
-    const network = await web3.eth.net.getNetworkType()
-    return {
-      web3,
-      accounts,
-      network,
-      address: accounts[0]
-    }
-  }
-
-  async componentWillMount() {
-    // First run ask for Metamask authorization
-    // - we should load the page before asking
-    // - also it will not work on address or network change so we should
-    // create an action that can be dispatched at the appropriate moment.
-    // try {
-    //   const web3 = await getWeb3()
-    //   const auth = await this.getAccounts(web3)
-    //   await this.props.initWeb3(auth)
-    //   await this.props.getUserCups(auth.address)
-    //   // web3.currentProvider.publicConfigStore.on('update', async (data) => {
-    //   //   const address = data.selectedAddress
-    //   //   if (address !== this.props.address) {
-    //   //     console.log('change', address, this.props.address)
-    //   //     await this.props.getUserCups(data.selectedAddress)
-    //   //     this.props.accountChange(address)
-    //   //   }
-    //   // });
-    // } catch(err) {
-    //   console.warn('Failed to initWeb3', err)
-    // }
-
   }
 
   handleChange(panelId) {
@@ -114,7 +79,6 @@ const mapStateToProps = ({ auth, maker }) => {
 
 const mapDispatchToProps = dispatch => ({
   accountChange: (address) => dispatch(accountChange(address)),
-  initWeb3: (auth) => dispatch(initWeb3(auth)),
 })
 
 export default connect(

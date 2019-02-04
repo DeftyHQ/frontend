@@ -15,6 +15,7 @@ import {
 import { getWeb3 } from 'api'
 import { initWeb3 } from 'store/web3Action'
 import { initMaker, getCups } from 'store/makerAction'
+
 import styles from './styles.module.css'
 
 import Maker from '@makerdao/dai'
@@ -40,23 +41,17 @@ class Home extends React.Component {
       const { maker, account} = this.props
       const proxy = await maker.service('proxy').getProxyAddress()
       await this.props.getCups(account, proxy)
-      console.log(this.props.cups)
-      // const p1 = await maker.service('proxy').getProxyAddress()
-      // const p2 = await maker.service('proxy').currentProxy()
 
-      // const cdp = await this.props.getCups(auth.address, p1)
-      // console.log(p1, p2, cdp)
-      // const cups = this.props.cups.map(async (cup) => {
-      //   const c = await maker.getCdp(cup.id)
-      //   const debt = await c.getDebtValue()
-      //   const debt2 = await c.getDebtValue(Maker.USD)
-      //   const col = await c.getCollateralizationRatio()
-      //   const col2 = await c.getLiquidationPrice()
-      //   const col3 = await c.getCollateralValue()
-      //   const ratio = await c.isSafe();
-      //   console.log(debt, debt2.toString(), col, col2.toString(), col3.toString(), ratio)
-      // })
-      // console.log(cups)
+
+      // web3.currentProvider.publicConfigStore.on('update', async (data) => {
+      //   const address = data.selectedAddress
+      //   if (address !== this.props.address) {
+      //     console.log('change', address, this.props.address)
+      //     await this.props.getUserCups(data.selectedAddress)
+      //     this.props.accountChange(address)
+      //   }
+      // });
+
     } catch (err) {
       console.warn(err)
     }

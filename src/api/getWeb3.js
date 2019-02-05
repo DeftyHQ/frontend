@@ -11,6 +11,7 @@ const getWeb3 = () =>
         // Acccounts now exposed
         resolve(web3);
       } catch (error) {
+        console.log('Failed to init web3.ethereum')
         reject(error);
       }
     }

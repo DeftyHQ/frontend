@@ -19,7 +19,7 @@ class TradeHistory extends React.Component {
             <TableRow>
               <TableCell>Date</TableCell>
               <TableCell>CDP</TableCell>
-              <TableCell align='right' colspan={2}>Price (ETH)</TableCell>
+              <TableCell align='right' colSpan={2}>Price (ETH)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

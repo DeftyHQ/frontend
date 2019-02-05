@@ -62,7 +62,7 @@ class Wallet extends React.Component {
             <Typography>
               <span className={styles.name}>Ratio</span>
               <NumberFormat
-                value={cup.ratio.toString()}
+                value={cup.ratio}
                 displayType={'text'}
                 decimalScale={2}
                 fixedDecimalScale={true}

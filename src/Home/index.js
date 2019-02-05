@@ -18,6 +18,7 @@ import {
 import { getWeb3 } from 'api'
 import { initWeb3 } from 'store/web3Action'
 import { initMaker, getCups } from 'store/makerAction'
+import { SystemStore } from 'lib/scd/system'
 
 import styles from './styles.module.css'
 
@@ -40,10 +41,22 @@ class Home extends React.Component {
       const auth = await this.getAccounts(web3)
       await this.props.initWeb3(auth)
       await this.props.initMaker()
-
+      // Accout1
+      // addr: 0x909f74Ffdc223586d0d30E78016E707B6F5a45E2
+      // proxy: `0x1940a230BbB225d928266339e93237eD77F37b56`
+      // #4832 (old)
+      // #4863 (portal)
+      // #4845 (graphql)
+      // Kovan2
+      // addr: 0xAd8fD699dFa61BF92D660A2eCD05ba612B37c0F7
+      // proxy2: 0xff10e3e2f63bf07bc00d8ac298a2459e1950ef14
       const { maker, account} = this.props
       const proxy = await maker.service('proxy').getProxyAddress()
+      const owner = await maker.service('proxy').getOwner(proxy)
+      console.log('account', this.props.auth.web3.eth.getAccounts[0], account, owner, proxy)
       await this.props.getCups(account, proxy)
+      const store = new SystemStore
+      store.init(web3, '0xa71937147b55deb8a530c7229c442fd3f31b7db2')
 
 
       // web3.currentProvider.publicConfigStore.on('update', async (data) => {
@@ -100,6 +113,7 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = ({ auth, maker }) => ({
+  auth: auth,
   account: auth.address,
   status: auth.status,
   cups: maker.cups,

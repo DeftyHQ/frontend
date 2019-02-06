@@ -3,21 +3,22 @@ import * as daisystem from "./utils/dai-system";
 import {truncateAddress} from "./utils/helpers";
 import {getWebClientProviderName} from "./utils/blockchain";
 
+import * as settings from "./settings.json";
+import { fetchCups } from 'api';
 
 import {fromRaytoWad, toBigNumber, toWei, wdiv, toBytes32, addressToBytes32, methodSig, isAddress} from "./utils/helpers";
-import Eth from 'ethjs'
-const eth = new Eth(new Eth.HttpProvider('https://kovan.infura.io/v3/078596535bf243c6996d2ac196563d49'));
+// import Eth from 'ethjs'
+// const eth = new Eth(new Eth.HttpProvider('https://kovan.infura.io/v3/078596535bf243c6996d2ac196563d49'));
 
-export class SystemStore {
-  tub = {}
-  web3 = null
+export class System {
+  fromBlock = ""
 
-  init = (web3, tub) => {
-    this.tub.address = tub;
-    this.web3 = web3;
-    blockchain.loadObject(web3, "tub", tub, "tub");
-    // this.setFiltersTub();
-    this.setCup('0x1940a230BbB225d928266339e93237eD77F37b56')
+  constructor() {
+    const tub = settings.chain["kovan"].saiTub
+    this.fromBlock = settings.chain["kovan"].fromBlock
+
+    blockchain.loadObject("tub", tub, "tub")
+    blockchain.loadObject("saivaluesaggregator", settings.chain["kovan"].saiValuesAggregator, "saiValuesAggregator")
   }
 
   // setMyCupsFromChain = (keepTrying = false, callbacks = [], firstLoad = false) => {
@@ -33,35 +34,57 @@ export class SystemStore {
   //   this.setCups("legacy", false, callbacks, firstLoad);
   // }
 
-  setCup = async (lad) => {
-    let promisesCups = []
-    let fromBlock = 10233088 //settings.chain[this.rootStore.network.network].fromBlock
-    let firstLoad = true
-    promisesCups = await this.getCupsFromChain(lad, fromBlock, promisesCups, firstLoad);
+  setCups = async (lad) => {
+    let promisesCups = await this.getCupsFromChain(lad, this.fromBlock);
+    const currentLad = cup => lad.toLowerCase() === cup.cupData.lad.toLowerCase()
+    Promise.all(promisesCups)
+      .then(cups => cups.filter(currentLad))
+      .then((cups) => {
+        console.debug(cups)
+      })
   }
 
-  getCup = (id, firstLoad = false) => {
-    console.debug('getCup', id)
+  getCup = (id) => {
+    return daisystem.getCup(id)
+
+    // cupData: {
+    //     "id": 4832,
+    //     "lad": "0x909f74ffdc223586d0d30e78016e707b6f5a45e2",
+    //     "safe": false,
+    //     "ink": "999843601236543264",
+    //     "art": "73000000000000000000",
+    //     "ire": "72000547669429963994",
+    //     "ratio": "1.413835616438356164",
+    //     "avail_dai": "0",
+    //     "avail_skr": "0",
+    //     "avail_eth": "0",
+    //     "liq_price": "109499999999999999997"
+    //   }
   }
 
-  getCupsFromChain = (lad, fromBlock, promisesCups = [], firstLoad = false) => {
+  getCupsFromApi = (lad, proxy) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const cupIds = await fetchCups(lad, proxy)
+        const promisesCups = cupIds.map(cup => this.getCup(parseInt(cup.id, 16)))
+        resolve(promisesCups)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
 
+  getCupsFromChain = (lad, promisesCups = []) => {
+    const fromBlock = this.fromBlock
     // if (!blockchain.getProviderUseLogs()) return promisesCups;
-    console.log(blockchain.objects)
     return new Promise((resolve, reject) => {
       const promisesLogs = [];
       promisesLogs.push(
         new Promise((resolve, reject) => {
-          // blockchain.objects.tub.LogNewCup({lad}, {fromBlock}).get((e, r) => {
-          blockchain.objects.tub.getPastEvents('LogNewCup', { filter: {lad}, fromBlock }).then((r) => {
-            let e;
+          blockchain.objects.tub.LogNewCup({lad}, { fromBlock }).get((e, r) => {
             if (!e) {
               for (let i = 0; i < r.length; i++) {
-
-                const log = r[i]
-                const lad = log.returnValues.lad
-                const cup = parseInt(log.returnValues.cup, 16)
-                promisesCups.push(this.getCup(cup, firstLoad));
+                promisesCups.push(this.getCup(parseInt(r[i].args.cup, 16)));
               }
               resolve(true);
             } else {
@@ -71,56 +94,21 @@ export class SystemStore {
         })
       );
       promisesLogs.push(
-        // new Promise((resolve, reject) => {
-        //   // blockchain.objects.tub.LogNote({sig: methodSig(this.web3, "give(bytes32,address)"), bar: toBytes32(this.web3, lad)}, {fromBlock}).get((e, r) => {
-        //   blockchain.objects.tub.getPastEvents(
-        //     'LogNote',
-        //     // {
-        //     //   filter: {
-        //     //     sig: methodSig(this.web3, "give(bytes32,address)"),
-        //     //     bar: toBytes32(this.web3, lad)
-        //     //   }
-        //     // },
-        //     // {sig: methodSig(this.web3, "give(bytes32,address)"), bar: toBytes32(this.web3, lad)},
-        //     fromBlock
-        //   ).then((r) => {
-        //     let e;
-        //     console.debug('Warning', r, e)
-        //     debugger
-        //     if (!e) {
-        //       for (let i = 0; i < r.length; i++) {
-        //         const log = r[i]
-        //         const lad = log.returnValues.lad
-        //         const cup = parseInt(log.returnValues.foo, 16)
-        //         promisesCups.push(this.getCup(cup, firstLoad));
-        //       }
-        //       resolve(true);
-        //     } else {
-        //       reject(e);
-        //     }
-        //   });
-        // })
-
         new Promise((resolve, reject) => {
-          console.debug('tub', this.tub.address,  methodSig(this.web3, "give(bytes32,address)"))
-          // this.web3.eth.getPastLogs({
-          eth.getLogs({
-            address: this.tub.address,
-            fromBlock: `${fromBlock}`,
-            toBlock: 'latest',
-            topics: [
-              methodSig(this.web3, "give(bytes32,address)"),
-              null
-              // toBytes32(this.web3, lad)
-            ]
-          }).then(r => {
-            console.debug(r)
-            resolve(true)
-          })
-          .catch(reject)
+          blockchain.objects.tub.LogNote({sig: methodSig("give(bytes32,address)"), bar: toBytes32(lad)}, { fromBlock }).get((e, r) => {
+            if (!e) {
+              for (let i = 0; i < r.length; i++) {
+                promisesCups.push(this.getCup(parseInt(r[i].args.foo, 16)));
+              }
+              resolve(true);
+            } else {
+              reject(e);
+            }
+          });
         })
       );
       Promise.all(promisesLogs).then(() => resolve(promisesCups), e => reject(e));
     });
   }
+
 }

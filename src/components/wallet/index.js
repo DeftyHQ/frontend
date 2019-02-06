@@ -1,7 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import {
   Button,
+  CircularProgress,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
@@ -11,7 +11,6 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import NumberFormat from 'react-number-format';
 
-import { accountChange } from 'store/web3Action'
 import { Account, CdpCard } from 'components'
 import styles from './styles.module.css'
 
@@ -29,27 +28,28 @@ class Wallet extends React.Component {
   }
 
   displayList(list) {
-
     return list.map((cup, i) => {
       const { expanded } = this.state
+      const isLegacy = cup.type === "legacy"
       const key = `panel${i}`
       return (
         <ExpansionPanel
           key={key}
           expanded={expanded === key}
-          onChange={this.handleChange(key)}>
+          onChange={this.handleChange(key)}
+          className={ isLegacy ? styles.legacy : ''}>
          <ExpansionPanelSummary
             className={styles.cardSummary}
             expandIcon={<ExpandMoreIcon />}>
            <Typography
               className={cup.isSafe ? styles.safe : styles.unsafe}>
-              #{cup.id}
+              #{cup.cupData.id}
             </Typography>
             <Typography>{cup.collateralValue.toString()}</Typography>
          </ExpansionPanelSummary>
          <ExpansionPanelDetails
             className={styles.cardContent}>
-            <Typography>
+            {/*<Typography>
               <span className={styles.name}>Collateral</span>
               <NumberFormat
                 value={cup.ink}
@@ -72,7 +72,7 @@ class Wallet extends React.Component {
             <Typography>
               <span className={styles.name}>Art</span>
               <span className={styles.value}>{cup.art}</span>
-            </Typography>
+            </Typography>*/}
             <Typography>
               <span className={styles.name}>Debt value</span>
               {/*<span className={styles.value}>{cup.debtValue.toString()}</span>*/}
@@ -115,16 +115,24 @@ class Wallet extends React.Component {
   }
 
   render() {
-    const { cups, address, network } = this.props
+    const { cups, address, network, isLoading } = this.props
     return (
-      <div>
+      <div className={styles.fullHeight}>
         <Account address={address} network={network}/>
-        <section>
+        <section className={styles.stretch}>
           <div className={styles.listHeader}>
             <Typography variant="subtitle1">My CDP's</Typography>
           </div>
-          <div className={styles.listBody}>
-            { this.displayList(cups) }
+          <div className={styles.stretch}>
+          {
+            isLoading
+            ? <div className={styles.progress}>
+                <CircularProgress />
+              </div>
+            : <div className={styles.listBody}>
+                {this.displayList(cups)}
+              </div>
+          }
           </div>
         </section>
       </div>
@@ -133,20 +141,4 @@ class Wallet extends React.Component {
 }
 
 
-const mapStateToProps = ({ auth, maker }) => {
-  return ({
-    cups: maker.cups,
-    accounts: auth.accounts,
-    address: auth.address,
-    network: auth.network
-  })
-}
-
-const mapDispatchToProps = dispatch => ({
-  accountChange: (address) => dispatch(accountChange(address)),
-})
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Wallet)
+export default Wallet

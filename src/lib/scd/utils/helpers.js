@@ -12,8 +12,9 @@ var padLeft = (string, chars, sign) => {
   return new Array(chars - string.length + 1).join(sign ? sign : "0") + string;
 };
 
-export const toBytes32 = (w3, x, prefix = true) => {
-  let y = w3.utils.toHex(x);
+// CALLED
+export const toBytes32 = (x, prefix = true) => {
+  let y = web3.toHex(x);
   y = y.replace("0x", "");
   y = padLeft(y, 64);
   if (prefix) y = "0x" + y;
@@ -147,9 +148,9 @@ export const etherscanToken = (network, text, token, holder = false) => {
 }
 
 // CHANGED
-export const methodSig = (w3, method) => {
-  return w3.utils.keccak256(method)
-  // return w3.utils.sha3(method).substring(0, 10)
+export const methodSig = (method) => {
+  // return w3.utils.keccak256(method)
+  return web3.sha3(method).substring(0, 10)
 }
 
 export const min = (num1, num2) => {

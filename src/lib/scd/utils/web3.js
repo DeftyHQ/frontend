@@ -75,7 +75,7 @@ class Web3Extended extends Web3 {
   // }
 
   setWebClientWeb3 = () => {
-    this.stop();
+    // this.stop();
     return new Promise(async (resolve, reject) => {
       try {
         if (window.web3 || window.ethereum) {

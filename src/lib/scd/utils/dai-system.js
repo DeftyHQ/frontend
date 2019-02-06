@@ -1,5 +1,4 @@
 // Libraries
-import React from "react";
 import Promise from "bluebird";
 
 // Utils
@@ -28,7 +27,6 @@ import * as settings from "../settings";
 // }
 
 export const getCup = id => {
-  console.debug(`getCup: ${id}`)
   return new Promise((resolve, reject) => {
     blockchain.objects.saiValuesAggregator.aggregateCDPValues(toBytes32(id), (e, cup) => {
       if (!e) {
@@ -83,53 +81,6 @@ export const getCupHistoryFromService = (network, cupId) => {
     getFromService(network, `{ getCup(id: ${cupId}) { actions { nodes { act arg guy tx time ink art per pip } } } }`)
     .then(r => resolve(r.data.getCup ? r.data.getCup.actions.nodes : null), e => reject(e))
   });
-}
-
-export const getBiteNotification = (cupId, history, alreadyClosed) => {
-  const latestAction = history[0];
-  if (latestAction && latestAction.act === "BITE" && !alreadyClosed) {
-    const prevlatestAction = history[1];
-    const date = formatDate((new Date(latestAction.time)).getTime() / 1000);
-    const art = toWei(prevlatestAction.art);
-    const liqPrice =  (art * 1.5 / latestAction.per) / prevlatestAction.ink;
-    const liqInk = toWei(prevlatestAction.ink - latestAction.ink);
-    const liqETH = liqInk * latestAction.per;
-    const liqInkCol = liqInk / 1.13;
-    const liqETHCol = liqInkCol * latestAction.per;
-    const liqInkPen = liqInk - liqInkCol;
-    const liqETHPen = liqInkPen * latestAction.per;
-    const pip = toWei(latestAction.pip);
-    return <React.Fragment>
-              <div className="grouped-section">
-                Your CDP #{cupId} was liquidated on { date } to pay back { printNumber(art) } DAI.
-              </div>
-              <div className="grouped-section">
-                <div className="dark-text">Total ETH (PETH) liquidated</div>
-                <div style={ {fontSize: "1.3rem", fontWeight: "600" } }>{ printNumber(liqETH) } ETH</div>
-                <div className="dark-text">{ printNumber(liqInk) } PETH</div>
-              </div>
-              <div className="indented-section">
-                <div className="line-indent"></div>
-                <div className="grouped-section">
-                  <div className="dark-text">Collateral</div>
-                  <div style={ {fontSize: "1.1rem", fontWeight: "600" } }>{ printNumber(liqETHCol) } ETH</div>
-                  <div className="dark-text">{ printNumber(liqInkCol) } PETH</div>
-                </div>
-                <div className="grouped-section">
-                  <div className="dark-text">13% liquidation penalty</div>
-                  <div style={ {fontSize: "1.1rem", fontWeight: "600" } }>{printNumber(liqETHPen)} ETH</div>
-                  <div className="dark-text">{printNumber(liqInkPen)} PETH</div>
-                </div>
-              </div>
-              <div className="grouped-section">
-                <div className="dark-text">Became vulnerable to liquidation @ price</div>
-                <div style={ {fontSize: "1.3rem", fontWeight: "600" } }>{ printNumber(liqPrice)} USD</div>
-                <div className="dark-text">Liquidated @ price</div>
-                <div style={ {fontSize: "1.3rem", fontWeight: "600" } }>{ printNumber(pip) } USD</div>
-              </div>
-            </React.Fragment>;
-  }
-  return null;
 }
 
 // export const futureRap = (cup, age, chi, rhi, tax, fee) => {

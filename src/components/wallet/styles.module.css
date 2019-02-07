@@ -65,3 +65,13 @@
 .cardContent p > span:last-of-type {
   margin-left: auto;
 }
+
+.newCupAction {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.newCupAction > button {
+  margin-left: 2em;
+}

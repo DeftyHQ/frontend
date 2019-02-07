@@ -58,6 +58,45 @@ class Wallet extends React.Component {
     }
   }
 
+  cupAction(cup) {
+    switch(cup.type) {
+      case 'wrapped':
+       return (
+         <Button
+            size="small"
+            onClick={() => this.handleUnWrap(cup)}>
+            Unwrap
+          </Button>
+       )
+       case 'legacy':
+         return (
+           <Button
+             size="small"
+              color="primary"
+              onClick={() => this.handleOpen(cup)}>
+              Wrap
+           </Button>
+         )
+       default:
+         return (
+           <div className={styles.newCupAction}>
+            <div>
+             <Typography variant="caption">This is CDP belongs to your proxy</Typography>
+             <Typography variant="caption">You will soon be able to wrap it!</Typography>
+            </div>
+             <Button
+               size="small"
+               color="primary"
+               variant="outlined"
+               disabled
+               onClick={() => this.handleOpen(cup)}>
+               Wrap
+             </Button>
+           </div>
+         )
+    }
+  }
+
   displayList(list) {
     return list.map((cup, i) => {
       const { expanded } = this.state
@@ -134,20 +173,7 @@ class Wallet extends React.Component {
             </Typography>
          </ExpansionPanelDetails>
          <ExpansionPanelActions>
-           {
-             cup.type === 'wrapped'
-               ? <Button
-                  size="small"
-                  onClick={() => this.handleUnWrap(cup)}>
-                  Unwrap
-                </Button>
-               : <Button
-                  size="small"
-                  color="primary"
-                  onClick={() => this.handleOpen(cup)}>
-                  Wrap
-                </Button>
-           }
+           { this.cupAction(cup) }
          </ExpansionPanelActions>
        </ExpansionPanel>
       )

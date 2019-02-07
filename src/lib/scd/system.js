@@ -157,7 +157,6 @@ export class System {
   proveOwnership(cup, from) {
     const contract = blockchain.objects.deftyWrap
     if (!contract) return console.error('Failed to load DeftyWrap', contract)
-
     const tx = { from, value: 0 }
     return new Promise(async (resolve, reject) => {
       return contract.proveOwnership

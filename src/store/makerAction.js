@@ -109,7 +109,7 @@ function setType(cups, lad, proxy, defty, nft) {
     let type;
     const owner = cup.cupData.lad.toLowerCase()
     if (owner === lad.toLowerCase()) {
-      type = "legcay"
+      type = "legacy"
     } else if (owner === proxy.toLowerCase()) {
       type = "new"
     } else if (owner === defty.toLowerCase()) {
@@ -155,7 +155,7 @@ async function getCupDetails(node, maker) {
   //     "avail_eth": "0",
   //     "liq_price": "109499999999999999997"
   //   },
-  //   "type": "legcay",
+  //   "type": "legacy",
   //   "debtValue": {
   //     "_amount": "73",
   //     "symbol": "USD"

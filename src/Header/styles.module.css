@@ -1,3 +1,7 @@
 .between {
   flex: 1 1 auto;
 }
+
+.logo {
+  max-height: calc(48px * 1);
+}

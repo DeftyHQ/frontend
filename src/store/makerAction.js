@@ -1,6 +1,7 @@
 import Maker from '@makerdao/dai'
 
 import { System } from 'lib/scd/system'
+import * as blockchain from '../lib/scd/utils/blockchain'
 
 export const MKR = {
   INIT_START: 'MKR_INIT_START',
@@ -45,7 +46,7 @@ export function setCups(lad) {
     try {
       const legacyCups = await system.getCupsFromApi(lad, proxy)
       const newCups = await system.getCupsFromChain(proxy)
-      promiseCups = [...legacyCups, ...newCups]
+      promiseCups = [...legacyCups, ...newCups ]
     } catch(err) {
       console.error('Error in setCups():', err)
       dispatch({
@@ -53,9 +54,26 @@ export function setCups(lad) {
         payload: { err }
       })
     } finally {
+
+
+      // @TODO
+      // Refactor fetching defty cups
+      // Triggers warning: EventEmitter leak!!!
+      let wrappedCups = [];
+      let nft;
+      const defty = blockchain.objects.deftyWrap.address;
+      try {
+        nft = await system.getWrappedTokens(lad, lad)
+        wrappedCups = await system.getCupByToken(nft, lad)
+      } catch {
+        console.debug('User has no Wrapped cups')
+      }
+
+      promiseCups = [ ...promiseCups, ...wrappedCups ]
+
       const cups = await Promise.all(promiseCups)
-        .then(cups => filterCups(cups, lad, proxy))
-        .then(cups => setType(cups, lad, proxy))
+        .then(cups => filterCups(cups, lad, proxy, defty))
+        .then(cups => setType(cups, lad, proxy, defty, nft))
         // @TODO: double request with system.getCups...
         // should remove once we determine which info and format
         // we really want for a cup.
@@ -74,15 +92,19 @@ export function setCups(lad) {
 
 /* Action Helpers */
 
-function filterCups(cups, lad, proxy) {
+function filterCups(cups, lad, proxy, defty) {
   const isOwner = cup =>  {
     const currentOwner = cup.cupData.lad.toLowerCase()
-    return currentOwner === lad.toLowerCase() || currentOwner === proxy.toLowerCase()
+    return (
+         currentOwner === lad.toLowerCase()
+      || currentOwner === proxy.toLowerCase()
+      || currentOwner === defty.toLowerCase()
+    )
   }
   return cups.filter(isOwner)
 }
 
-function setType(cups, lad, proxy) {
+function setType(cups, lad, proxy, defty, nft) {
   return cups.map(cup => {
     let type;
     const owner = cup.cupData.lad.toLowerCase()
@@ -90,6 +112,9 @@ function setType(cups, lad, proxy) {
       type = "legcay"
     } else if (owner === proxy.toLowerCase()) {
       type = "new"
+    } else if (owner === defty.toLowerCase()) {
+      type = "wrapped"
+      cup.nft = nft
     }
     cup.type = type
     return cup

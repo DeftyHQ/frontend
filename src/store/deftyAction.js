@@ -8,6 +8,9 @@ export const DEFTY = {
   WRAP_START: "DEFT_WRAP_START",
   WRAP_ERROR: "DEFT_WRAP_ERROR",
   WRAP_SUCCESS: "DEFTY_WRAP_SUCCESS",
+  UNWRAP_START: "DEFT_UNWRAP_START",
+  UNWRAP_ERROR: "DEFT_UNWRAP_ERROR",
+  UNWRAP_SUCCESS: "DEFTY_UNWRAP_SUCCESS",
 }
 
 export const STATUS = {
@@ -77,6 +80,25 @@ export const wrap = (cup) => {
     } catch (err) {
       console.warn('actions', err)
       dispatch({ type: DEFTY.WRAP_ERROR })
+    }
+  }
+}
+
+export const unWrap = (cup) => {
+  return async (dispatch, getState) => {
+    const { system } = getState().maker
+    const { address } = getState().network
+    const { nft } = cup
+    dispatch({
+      type: DEFTY.UNWRAP_START
+    })
+    try {
+      debugger
+      await system.unwrap(nft, address)
+      dispatch({ type: DEFTY.UNWRAP_SUCCESS })
+    } catch (err) {
+      console.warn('actions', err)
+      dispatch({ type: DEFTY.UNWRAP_ERROR })
     }
   }
 }

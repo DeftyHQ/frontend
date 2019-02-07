@@ -4,6 +4,7 @@ import NumberFormat from 'react-number-format';
 import {
   Modal,
   Button,
+  Paper,
   CircularProgress,
   ExpansionPanel,
   ExpansionPanelSummary,
@@ -22,8 +23,20 @@ import styles from './styles.module.css'
 class Wallet extends React.Component {
   state = {
     expanded: null,
+    unWrapOpen: false,
     modalOpen: false,
     modalCup: null,
+  }
+
+  handleUnWrap(cup) {
+    this.setState({
+      unWrapOpen: true,
+      modalCup: cup,
+    });
+  };
+
+  handleUnWrapClose() {
+    this.setState({ unWrapOpen: false })
   }
 
   handleOpen(cup) {
@@ -122,9 +135,18 @@ class Wallet extends React.Component {
          </ExpansionPanelDetails>
          <ExpansionPanelActions>
            {
-             cup.status === 'wrapped'
-               ? <Button size="small">Unwrap</Button>
-               : <Button size="small" color="primary" onClick={() => this.handleOpen(cup)}>Wrap</Button>
+             cup.type === 'wrapped'
+               ? <Button
+                  size="small"
+                  onClick={() => this.handleUnWrap(cup)}>
+                  Unwrap
+                </Button>
+               : <Button
+                  size="small"
+                  color="primary"
+                  onClick={() => this.handleOpen(cup)}>
+                  Wrap
+                </Button>
            }
          </ExpansionPanelActions>
        </ExpansionPanel>
@@ -133,7 +155,7 @@ class Wallet extends React.Component {
   }
 
   render() {
-    const { cups, address, network, isLoading } = this.props
+    const { cups, address, network, isLoading, unWrap } = this.props
     return (
       <div className={styles.fullHeight}>
         <Account address={address} network={network}/>
@@ -149,16 +171,37 @@ class Wallet extends React.Component {
               </div>
             : <div className={styles.listBody}>
                 {this.displayList(cups)}
-              <Modal
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
-                open={this.state.modalOpen}
-                onClose={this.handleClose.bind(this)}
-                style={{ display: 'flex', alignItems:'center', justifyContent:'center' }}>
-                <WrapSteps
-                  cup={this.state.modalCup}
-                  onCompletion={this.handleClose.bind(this)}/>
-              </Modal>
+                <Modal
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                  open={this.state.modalOpen}
+                  onClose={this.handleClose.bind(this)}
+                  style={{ display: 'flex', alignItems:'center', justifyContent:'center' }}>
+                  <WrapSteps
+                    cup={this.state.modalCup}
+                    onCompletion={this.handleClose.bind(this)}/>
+                </Modal>
+                <Modal
+                  open={this.state.unWrapOpen}
+                  onClose={this.handleUnWrapClose.bind(this)}
+                  style={{ display: 'flex', alignItems:'center', justifyContent:'center' }}>
+                  <Paper className={styles.unwrap}>
+                    <Typography variant="h6" id="modal-title" gutterBottom>
+                       CDP #{this.state.modalCup ? this.state.modalCup.cupData.id : ''}
+                    </Typography>
+                    <Typography>This action will cancel all open trades for this CDP.</Typography>
+                    <Typography>If you want to trade this CDP in the future you will need to wrap it again.</Typography>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={async () => {
+                        await unWrap(this.state.modalCup)
+                        this.handleUnWrapClose()
+                      }}>
+                      UnWrap
+                    </Button>
+                  </Paper>
+                </Modal>
               </div>
           }
           </div>

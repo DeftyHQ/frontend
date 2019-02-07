@@ -16,6 +16,7 @@ import {
 
 import { initNetwork } from 'store/networkAction'
 import { initSystem, setCups } from 'store/makerAction'
+import { unWrap } from 'store/deftyAction'
 import styles from './styles.module.css'
 
 class Home extends React.Component {
@@ -68,12 +69,13 @@ class Home extends React.Component {
                 address={this.props.address}
                 network={this.props.network}
                 isLoading={this.props.isCupsLoading}
+                unWrap={this.props.unWrap}
                />
             </Paper>
           </Col>
           <Col sm={12} md={7} lg={9}>
             <Row>
-              <Col xs={12} md={12} lg={8}>
+              <Col xs={12} md={12} lg={7}>
                 <Typography variant="h5" gutterBottom>CDP Market</Typography>
                 <Paper square elevation={2}>
                   <CdpMarket />
@@ -83,7 +85,7 @@ class Home extends React.Component {
                   <Orders />
                 </Paper>
               </Col>
-              <Col xs={12} md={12} lg={3}>
+              <Col xs={12} md={12} lg={5}>
                 <Typography variant="h5" gutterBottom>Trade History</Typography>
                 <Paper square elevation={2}>
                   <TradeHistory />
@@ -109,7 +111,8 @@ const mapStateToProps = ({ network, maker }) => ({
 const mapDispatchToProps = dispatch => ({
   initNetwork: () => dispatch(initNetwork()),
   initSystem: () => dispatch(initSystem()),
-  setCups: (lad) => dispatch(setCups(lad))
+  setCups: (lad) => dispatch(setCups(lad)),
+  unWrap: (cup) => dispatch(unWrap(cup)),
 })
 
 export default connect(

@@ -169,4 +169,4 @@ export const jsNumberForAddress = address => {
 //   return <div className="identicon" style={ {width: `${size}px`, height: `${size}px`, overflow: "hidden", borderRadius: "50%" } } dangerouslySetInnerHTML={ {__html: jazzicon(size, jsNumberForAddress(address)).innerHTML} } />
 // }
 
-export const {toBigNumber , toWei, fromWei, isAddress, toAscii, toHex, toChecksumAddress} = web3;
+export const {toBigNumber , toWei, fromWei, isAddress, toAscii, toHex, fromHex, toChecksumAddress} = web3;

@@ -1,5 +1,8 @@
 import React from 'react'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import NumberFormat from 'react-number-format';
 import {
+  Modal,
   Button,
   CircularProgress,
   ExpansionPanel,
@@ -8,15 +11,30 @@ import {
   ExpansionPanelActions,
   Typography
 } from '@material-ui/core'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import NumberFormat from 'react-number-format';
 
-import { Account, CdpCard } from 'components'
+import {
+  Account,
+  WrapSteps,
+} from 'components'
+
 import styles from './styles.module.css'
 
 class Wallet extends React.Component {
   state = {
     expanded: null,
+    modalOpen: false,
+    modalCup: null,
+  }
+
+  handleOpen(cup) {
+    this.setState({
+      modalOpen: true,
+      modalCup: cup,
+    });
+  };
+
+  handleClose() {
+    this.setState({ modalOpen: false });
   }
 
   handleChange(panelId) {
@@ -106,7 +124,7 @@ class Wallet extends React.Component {
            {
              cup.status === 'wrapped'
                ? <Button size="small">Unwrap</Button>
-               : <Button size="small" color="primary">Wrap</Button>
+               : <Button size="small" color="primary" onClick={() => this.handleOpen(cup)}>Wrap</Button>
            }
          </ExpansionPanelActions>
        </ExpansionPanel>
@@ -131,6 +149,16 @@ class Wallet extends React.Component {
               </div>
             : <div className={styles.listBody}>
                 {this.displayList(cups)}
+              <Modal
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+                open={this.state.modalOpen}
+                onClose={this.handleClose.bind(this)}
+                style={{ display: 'flex', alignItems:'center', justifyContent:'center' }}>
+                <WrapSteps
+                  cup={this.state.modalCup}
+                  onCompletion={this.handleClose.bind(this)}/>
+              </Modal>
               </div>
           }
           </div>

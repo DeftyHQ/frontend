@@ -1,8 +1,6 @@
 import Maker from '@makerdao/dai'
 
 import { System } from 'lib/scd/system'
-import { fetchCups } from 'api'
-import { AUTH } from './web3Action'
 
 export const MKR = {
   INIT_START: 'MKR_INIT_START',

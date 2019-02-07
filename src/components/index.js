@@ -1,7 +1,7 @@
 export { default as Account } from './account'
-export { default as CdpCard } from './cdpCard'
 export { default as CdpMarket } from './cdpMarket'
 export { default as Orders } from './orders'
 export { default as TradeHistory } from './tradeHistory'
 export { default as WalletProvider } from './walletProvider'
 export { default as Wallet } from './wallet'
+export { default as WrapSteps } from './wrapSteps'

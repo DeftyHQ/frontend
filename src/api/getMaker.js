@@ -1,4 +1,3 @@
-import Maker from '@makerdao/dai'
 import { request } from 'graphql-request'
 
 const config = {

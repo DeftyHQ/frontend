@@ -1,0 +1,44 @@
+.container {
+  /*
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  */
+}
+
+.content {
+  flex-flow: column;
+  background-color: #fff;
+  padding: 32px;
+  width: 600px;
+}
+
+.content > p {
+  margin: 1em 0;
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5em;
+  padding-bottom: 1.5em;
+}
+
+.progress {
+  margin-right: 1em;
+}
+
+.footer {
+  border-top: 1px solid lightgrey;
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0 calc(24px + 8px);
+  padding: 2em 0
+}
+
+.footer > button {
+  margin-left: 2em;
+}

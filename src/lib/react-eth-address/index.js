@@ -97,6 +97,7 @@ class EthAddress extends React.Component {
       <a
         href={`https://etherscan.io/search?q=${address}`}
         target="_blank"
+        rel="noopener noreferrer"
         className={classes}
       >
         { displayAddress }

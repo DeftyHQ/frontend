@@ -22,10 +22,8 @@ class WalletProvider extends React.Component {
           <Button
             fullWidth
             className={styles.providerAction}
-            onClick={() => {
-              selectProvider('MetaMask')
-            }}>
-            <img src={metamaskSVG} className={styles.providerIcon}></img>
+            onClick={() => selectProvider('MetaMask')}>
+            <img alt='metamask' src={metamaskSVG} className={styles.providerIcon}></img>
             MetaMask
           </Button>
         </div>
@@ -35,7 +33,7 @@ class WalletProvider extends React.Component {
             fullWidth
             className={styles.providerAction}
             onClick={() => selectProvider('Ledger')}>
-            <img src={ledgerSVG} className={styles.providerIcon}></img>
+            <img alt='ledger' src={ledgerSVG} className={styles.providerIcon}></img>
             <Typography>Ledger Nano S</Typography>
           </Button>
         </div>
@@ -45,7 +43,7 @@ class WalletProvider extends React.Component {
             fullWidth
             className={styles.providerAction}
             onClick={() => selectProvider('Trezor')}>
-            <img src={trezorSVG} className={styles.providerIcon}></img>
+            <img alt='trezor' src={trezorSVG} className={styles.providerIcon}></img>
             <Typography>Trezor</Typography>
           </Button>
         </div>

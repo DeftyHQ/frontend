@@ -1,6 +1,6 @@
 // Libraries
 import Web3 from "web3";
-import * as Web3ProviderEngine from "web3-provider-engine/dist/es5";
+// import * as Web3ProviderEngine from "web3-provider-engine/dist/es5";
 // import * as RpcSource from "web3-provider-engine/dist/es5/subproviders/rpc";
 // import Transport from "@ledgerhq/hw-transport-u2f";
 
@@ -9,7 +9,7 @@ import * as Web3ProviderEngine from "web3-provider-engine/dist/es5";
 // import TrezorSubProvider from "./trezor-subprovider";
 
 // Settings
-import * as settings from "../settings";
+// import * as settings from "../settings";
 
 export const getWebClientProviderName = () => {
   if (window.imToken)

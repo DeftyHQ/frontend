@@ -3,10 +3,7 @@ import Promise from "bluebird";
 
 // Utils
 import * as blockchain from "./blockchain";
-import {fromWei,
-    // wmul,
-    // wdiv,
-    toChecksumAddress, toBytes32, formatDate, printNumber, toWei} from "./helpers";
+import {fromWei, toChecksumAddress, toBytes32 } from "./helpers";
 
 import * as settings from "../settings";
 

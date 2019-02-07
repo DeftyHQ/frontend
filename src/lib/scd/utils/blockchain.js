@@ -7,16 +7,8 @@ import web3 from "./web3"
 const promisify = Promise.promisify;
 const schema = {};
 
+schema.deftywrap = require("abi/DeftyWrap.json");
 schema.tub = require("../abi/saitub");
-// schema.top = require("../abi/saitop");
-// schema.tap = require("../abi/saitap");
-// schema.vox = require("../abi/saivox");
-// schema.proxyregistry = require("../abi/proxyregistry");
-// schema.dsproxy = require("../abi/dsproxy");
-// schema.dsethtoken = require("../abi/dsethtoken");
-// schema.dstoken = require("../abi/dstoken");
-// schema.dsvalue = require("../abi/dsvalue");
-// schema.saiProxyCreateAndExecute = require("../abi/saiProxyCreateAndExecute");
 schema.saivaluesaggregator = require("../abi/saivaluesaggregator");
 
 export const objects = {
@@ -29,6 +21,7 @@ export const getAccounts = () => {
 // Changed
 export const loadObject = (type, address, label = null) => {
   const object = web3.eth.contract(schema[type].abi).at(address);
+  console.debug('Loading Contract', label, object)
   if (label) {
     objects[label] = object;
   }

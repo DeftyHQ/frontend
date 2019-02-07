@@ -6,7 +6,6 @@ import {
   Typography,
 } from '@material-ui/core'
 
-import Routes from 'routes'
 import {
   Wallet,
   WalletProvider,

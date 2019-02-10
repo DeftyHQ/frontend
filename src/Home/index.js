@@ -66,6 +66,7 @@ class Home extends React.Component {
                 selectProvider={this.selectProvider.bind(this)}/>
               <Wallet
                 cups={this.props.cups}
+                nfts={this.props.nfts}
                 address={this.props.address}
                 network={this.props.network}
                 isLoading={this.props.isCupsLoading}
@@ -104,6 +105,7 @@ const mapStateToProps = ({ network, maker }) => ({
   network: network.network,
   status: network.status,
   cups: maker.cups,
+  nfts: maker.nfts,
   maker: maker.instance,
   isCupsLoading: maker.isLoading,
 })

@@ -3,6 +3,12 @@ import Maker from '@makerdao/dai'
 import { System } from 'lib/scd/system'
 import * as blockchain from '../lib/scd/utils/blockchain'
 
+export const CUP_TYPES = {
+  WRAPPED: 'WRAPPED',
+  LEGACY: 'LEGACY',
+  MODERN: 'MODERN'
+}
+
 export const MKR = {
   INIT_START: 'MKR_INIT_START',
   INIT_PENDING: 'MKR_INIT_PENDING',
@@ -10,7 +16,8 @@ export const MKR = {
   INIT_ERROR: 'MKR_INIT_ERROR',
   CUPS_START: 'MKR_CUPS_START',
   CUPS_SUCCESS: 'MKR_CUPS_SUCCESS',
-  CUPS_ERROR: 'MKR_CUPS_ERROR'
+  CUPS_ERROR: 'MKR_CUPS_ERROR',
+  NFT_FILTER: 'NFT_GET_WRAPPED'
 }
 
 export function initSystem() {
@@ -63,7 +70,7 @@ export function setCups(lad) {
       let nft;
       const defty = blockchain.objects.deftyWrap.address;
       try {
-        nft = await system.getWrappedTokens(lad, lad)
+        nft = await system.getNFTs(lad, lad)
         wrappedCups = await system.getCupByToken(nft, lad)
       } catch {
         console.debug('User has no Wrapped cups')
@@ -90,8 +97,8 @@ export function setCups(lad) {
   }
 }
 
-/* Action Helpers */
 
+/* Action Helpers */
 function filterCups(cups, lad, proxy, defty) {
   const isOwner = cup =>  {
     const currentOwner = cup.cupData.lad.toLowerCase()
@@ -109,11 +116,11 @@ function setType(cups, lad, proxy, defty, nft) {
     let type;
     const owner = cup.cupData.lad.toLowerCase()
     if (owner === lad.toLowerCase()) {
-      type = "legacy"
+      type = CUP_TYPES.LEGACY
     } else if (owner === proxy.toLowerCase()) {
-      type = "new"
+      type = CUP_TYPES.MODERN
     } else if (owner === defty.toLowerCase()) {
-      type = "wrapped"
+      type = CUP_TYPES.WRAPPED
       cup.nft = nft
     }
     cup.type = type
@@ -155,7 +162,7 @@ async function getCupDetails(node, maker) {
   //     "avail_eth": "0",
   //     "liq_price": "109499999999999999997"
   //   },
-  //   "type": "legacy",
+  //   "type": CUP_TYPES.LEGACY,
   //   "debtValue": {
   //     "_amount": "73",
   //     "symbol": "USD"

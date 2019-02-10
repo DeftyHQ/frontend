@@ -1,9 +1,10 @@
-import { MKR } from './makerAction'
+import { MKR, CUP_TYPES } from './makerAction'
 import { DEFTY } from './deftyAction'
 
 export default (
   state = {
-    cups: []
+    cups: [],
+    nfts: []
   },
   action
 ) => {
@@ -27,7 +28,12 @@ export default (
     case MKR.CUPS_SUCCESS:
       return {
         ...state,
-        cups: action.payload.cups,
+        all: action.payload.cups,
+        nfts: action.payload.cups.filter(cup => cup.type === CUP_TYPES.WRAPPED),
+        cups: action.payload.cups.filter(cup => (
+             cup.type === CUP_TYPES.MODERN
+          || cup.type === CUP_TYPES.LEGACY
+        )),
         isLoading: false,
       }
     case DEFTY.PROOF_START:

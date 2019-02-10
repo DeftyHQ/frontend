@@ -200,7 +200,7 @@ export class System {
     })
   }
 
-  getWrappedTokens(address, from) {
+  getNFTs(address, from) {
     const contract = blockchain.objects.deftyWrap
     if (!contract) return console.error('Failed to load DeftyWarp', contract)
 

@@ -72,12 +72,11 @@ class WrapSteps extends React.Component {
       success = true
     } catch (err) {
       this.isLoading(false)
-      console.warn('Tried', action, err, )
+      console.warn('Attempted', action, err)
     } finally {
       this.isLoading(false)
       if (success) this.nextStep()
     }
-
   }
 
   isLoading(value) {
@@ -89,14 +88,16 @@ class WrapSteps extends React.Component {
   nextStep() {
     const { steps, activeStep } = this.state
     steps[activeStep].complete = true
-    this.setState(steps)
-    this.setState({ activeStep: activeStep + 1 })
+    this.setState({
+      steps,
+      activeStep: activeStep + 1
+    })
   }
 
 
   render() {
     const { activeStep, steps } = this.state;
-    const { cup, onCompletion } = this.props
+    const { cup, onComplete } = this.props
     return (
       <div className={styles.container}>
         <div className={styles.content}>
@@ -144,7 +145,7 @@ class WrapSteps extends React.Component {
                 <Button
                   variant="outlined"
                   color="primary"
-                  onClick={onCompletion}>
+                  onClick={onComplete}>
                   Close
                 </Button>
               </Paper>

@@ -1,3 +1,5 @@
+import { setCups } from './makerAction'
+
 export const DEFTY = {
   PROOF_START: "DEFTY_PROOF_START",
   PROOF_ERROR: "DEFT_PRROF_ERROR",
@@ -71,12 +73,12 @@ export const wrap = (cup) => {
     const { system } = getState().maker
     const { address } = getState().network
     const { id } = cup.cupData
-    dispatch({
-      type: DEFTY.WRAP_START
-    })
+    dispatch({ type: DEFTY.WRAP_START })
     try {
       await system.wrap(id, address)
       dispatch({ type: DEFTY.WRAP_SUCCESS })
+      // Refresh cups
+      dispatch(setCups(address))
     } catch (err) {
       console.warn('actions', err)
       dispatch({ type: DEFTY.WRAP_ERROR })

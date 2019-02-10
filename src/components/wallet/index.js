@@ -205,7 +205,7 @@ class Wallet extends React.Component {
                   style={{ display: 'flex', alignItems:'center', justifyContent:'center' }}>
                   <WrapSteps
                     cup={this.state.modalCup}
-                    onCompletion={this.handleClose.bind(this)}/>
+                    onComplete={this.handleClose.bind(this)}/>
                 </Modal>
                 <Modal
                   open={this.state.unWrapOpen}

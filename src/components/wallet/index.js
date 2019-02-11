@@ -11,34 +11,24 @@ import {
 
 import {
   Account,
-  WrapSteps,
   CupPanel,
+  StepsWrap,
+  StepsUnWrap,
 } from 'components'
 
+import { CUP_TYPES } from 'store/makerAction'
 import styles from './styles.module.css'
 
 class Wallet extends React.Component {
   state = {
-    unWrapOpen: false,
     modalOpen: false,
-    modalCup: null,
-  }
-
-  handleUnWrap(cup) {
-    this.setState({
-      unWrapOpen: true,
-      modalCup: cup,
-    });
-  };
-
-  handleUnWrapClose() {
-    this.setState({ unWrapOpen: false })
+    modalCup: {},
   }
 
   handleOpen(cup) {
     this.setState({
-      modalOpen: true,
       modalCup: cup,
+      modalOpen: true,
     });
   };
 
@@ -54,12 +44,34 @@ class Wallet extends React.Component {
 
   displayNFTs(nfts) {
     return nfts.map((nft, index) => (
-      <CupPanel key={index} cup={nft} index={index} action={this.handleUnWrap.bind(this)} actionTitle={'UnWrap'}/>
+      <CupPanel key={index} cup={nft} index={index} action={this.handleOpen.bind(this)} actionTitle={'UnWrap'}/>
     ))
   }
 
+  displayModalContent(cup) {
+    const { unWrap } = this.props
+
+    if (cup.type === CUP_TYPES.WRAPPED) {
+
+      // @TODO decide if its better to have connection to store.
+      return (
+        <StepsUnWrap
+          cup={cup}
+          onClick={async () => {
+            await unWrap(this.state.modalCup)
+            this.handleClose() }} />
+      )
+    } else {
+      return (
+        <StepsWrap
+          cup={this.state.modalCup}
+          onComplete={this.handleClose.bind(this)} />
+      )
+    }
+  }
+
   render() {
-    const { cups, nfts, address, network, isLoading, unWrap } = this.props
+    const { cups, nfts, address, network, isLoading } = this.props
     return (
       <div className={styles.fullHeight}>
         <Account address={address} network={network}/>
@@ -87,38 +99,12 @@ class Wallet extends React.Component {
             { this.displayNFTs(nfts) }
           </div>
         </section>
-        {/*To Wrap*/}
+
         <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
           open={this.state.modalOpen}
           onClose={this.handleClose.bind(this)}
           style={{ display: 'flex', alignItems:'center', justifyContent:'center' }}>
-          <WrapSteps
-            cup={this.state.modalCup}
-            onComplete={this.handleClose.bind(this)}/>
-        </Modal>
-        {/*To UnWrap*/}
-        <Modal
-          open={this.state.unWrapOpen}
-          onClose={this.handleUnWrapClose.bind(this)}
-          style={{ display: 'flex', alignItems:'center', justifyContent:'center' }}>
-          <Paper className={styles.unwrap}>
-            <Typography variant="h6" id="modal-title" gutterBottom>
-               CDP #{this.state.modalCup ? this.state.modalCup.cupData.id : ''}
-            </Typography>
-            <Typography>This action will cancel all open trades for this CDP.</Typography>
-            <Typography>If you want to trade this CDP in the future you will need to wrap it again.</Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={async () => {
-                await unWrap(this.state.modalCup)
-                this.handleUnWrapClose()
-              }}>
-              UnWrap
-            </Button>
-          </Paper>
+          { this.displayModalContent(this.state.modalCup) }
         </Modal>
       </div>
     )

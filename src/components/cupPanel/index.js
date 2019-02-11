@@ -42,7 +42,12 @@ class CupPanel extends React.Component {
             color="primary"
             variant="outlined"
             disabled
-            onClick={() => this.action(cup)}>
+            onClick={
+              () => {
+                debugger
+                this.action(cup)
+              }
+            }>
             Wrap
           </Button>
         </div>

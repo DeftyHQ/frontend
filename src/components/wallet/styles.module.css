@@ -1,13 +1,5 @@
 .listBody {}
 
-.unwrap {
-  padding: 24px;
-}
-
-.unwrap > button {
-  margin-top: 2em;
-}
-
 .listHeader {
   padding: 24px;
   padding-bottom: 12px

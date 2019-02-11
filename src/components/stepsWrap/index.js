@@ -16,7 +16,7 @@ import { STATUS, proveOwnership, transferOwnership, wrap } from 'store/deftyActi
 
 import styles from './styles.module.css'
 
-class WrapSteps extends React.Component {
+class StepsWrap extends React.Component {
   state = {
     activeStep: 0,
     subtitle: `
@@ -26,6 +26,7 @@ class WrapSteps extends React.Component {
     `,
     steps: [
       {
+        loading: false,
         complete: false,
         label: 'Proof of Ownership',
         content: `To wrap your CDP, you will need to sign a meesage from your
@@ -34,6 +35,7 @@ class WrapSteps extends React.Component {
         actionTitle: 'Prove Ownership',
       },
       {
+        loading: false,
         complete: false,
         label: 'Transfer Ownership',
         content: `Then you have to forward the CDP ownership of the wrapping
@@ -41,6 +43,7 @@ class WrapSteps extends React.Component {
         actionTitle: 'Transfer Ownership',
       },
       {
+        loading: false,
         complete: false,
         label: 'Mint your NFT',
         content: `Once the ownership is transfered you can mint your NFT and
@@ -157,10 +160,6 @@ class WrapSteps extends React.Component {
   }
 }
 
-
-const mapStateToProps = () => ({
-})
-
 const mapDispatchToProps = dispatch => ({
   proveOwnership: cup => dispatch(proveOwnership(cup)),
   transferOwnership: cup => dispatch(transferOwnership(cup)),
@@ -168,6 +167,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
-)(WrapSteps)
+)(StepsWrap)

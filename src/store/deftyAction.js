@@ -95,7 +95,6 @@ export const unWrap = (cup) => {
       type: DEFTY.UNWRAP_START
     })
     try {
-      debugger
       await system.unwrap(nft, address)
       dispatch({ type: DEFTY.UNWRAP_SUCCESS })
     } catch (err) {

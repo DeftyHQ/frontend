@@ -1,4 +1,4 @@
-import { setCups } from './makerAction'
+import { CUP_TYPES, setCups } from './makerAction'
 
 export const DEFTY = {
   PROOF_START: "DEFTY_PROOF_START",
@@ -26,9 +26,10 @@ export const STATUS = {
 
 export const proveOwnership = (cup) => {
   return async (dispatch, getState) => {
-    const { system } = getState().maker
+    const { system, proxyAddr } = getState().maker
     const { address } = getState().network
     const { id } = cup.cupData
+
     dispatch({
       type: DEFTY.PROOF_START,
       cup: {
@@ -36,7 +37,12 @@ export const proveOwnership = (cup) => {
       }
     })
     try {
-      await system.proveOwnership(id, address)
+      if (cup.type === CUP_TYPES.MODERN) {
+        await system.proveProxyOwnership(id, proxyAddr, address)
+      } else {
+        await system.proveOwnership(id, address)
+      }
+
       dispatch({
         type: DEFTY.PROOF_SUCCESS,
         cup: {
@@ -52,14 +58,19 @@ export const proveOwnership = (cup) => {
 
 export const transferOwnership = (cup) => {
   return async (dispatch, getState) => {
-    const { system } = getState().maker
+    const { system, proxyAddr } = getState().maker
     const { address } = getState().network
     const { id } = cup.cupData
+
     dispatch({
       type: DEFTY.TRANSFER_START
     })
     try {
-      await system.transferOwnership(id, address)
+      if (cup.type === CUP_TYPES.MODERN) {
+        await system.transferProxyOwnership(id, proxyAddr, address)
+      } else {
+        await system.transferOwnership(id, address)
+      }
       dispatch({ type: DEFTY.TRANSFER_SUCCESS })
     } catch (err) {
       console.warn('actions', err)

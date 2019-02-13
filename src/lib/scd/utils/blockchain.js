@@ -7,7 +7,10 @@ import web3 from "./web3"
 const promisify = Promise.promisify;
 const schema = {};
 
-schema.deftywrap = require("abi/DeftyWrap.json");
+// schema.deftywrap = require("abi/DeftyWrap.json");
+schema.deftywrap = require("abi/DeftyProxyWrap.json");
+schema.dsproxy = require("../abi/dsproxy");
+schema.saiProxyCreateAndExecute = require('../abi/saiProxyCreateAndExecute.json');
 schema.tub = require("../abi/saitub");
 schema.saivaluesaggregator = require("../abi/saivaluesaggregator");
 

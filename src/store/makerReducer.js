@@ -3,6 +3,7 @@ import { DEFTY } from './deftyAction'
 
 export default (
   state = {
+    all: [],
     cups: [],
     nfts: []
   },

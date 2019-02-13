@@ -4,9 +4,7 @@ import * as daisystem from './utils/dai-system';
 import * as settings from './settings.json';
 import { fetchCups } from 'api';
 import web3 from "./utils/web3"
-import {toBigNumber, fromHex, toBytes32, methodSig} from './utils/helpers';
-// import Eth from 'ethjs'
-// const eth = new Eth(new Eth.HttpProvider('https://kovan.infura.io/v3/078596535bf243c6996d2ac196563d49'));
+import {toBigNumber, fromHex, toBytes32, methodSig, addressToBytes32} from './utils/helpers';
 
 export class System {
   fromBlock = null
@@ -15,8 +13,10 @@ export class System {
     const network = 'kovan'
     this.fromBlock = settings.chain[network].fromBlock
     blockchain.loadObject('tub', settings.chain[network].saiTub, 'tub')
+    blockchain.loadObject('saiProxyCreateAndExecute', settings.chain[network].saiProxyCreateAndExecute, 'saiProxyCreateAndExecute' )
     blockchain.loadObject('saivaluesaggregator', settings.chain[network].saiValuesAggregator, 'saiValuesAggregator')
-    blockchain.loadObject('deftywrap', settings.chain[network].deftyWrap, 'deftyWrap' )
+    // blockchain.loadObject('deftywrap', settings.chain[network].deftyWrap, 'deftyWrap' )
+    blockchain.loadObject('deftywrap', settings.chain[network].deftyProxyWrap, 'deftyWrap' )
   }
 
   // setMyCupsFromChain = (keepTrying = false, callbacks = [], firstLoad = false) => {
@@ -133,10 +133,38 @@ export class System {
     return receipt;
   };
 
+  // DSProxy calls SaiProxy which calls Tub
+  transferProxyOwnership(cupId, proxy, from) {
+    blockchain.loadObject("dsproxy", proxy, "proxy")
+    const contract = blockchain.objects.proxy
+    const defty = blockchain.objects.deftyWrap
+    const saiProxy = blockchain.objects.saiProxyCreateAndExecute
+    const tub = blockchain.objects.tub
+    if (!contract || !defty || !tub || !saiProxy) return console.error('transferProxyOwnership: Failed to load Contracts')
+
+    const tx = { from, value: 0 }
+    const newOwner = defty.address
+    const action = `${methodSig(`give(address,bytes32,address)`)}${addressToBytes32(tub.address, false)}${toBytes32(cupId, false)}${addressToBytes32(newOwner, false)}`;
+
+    return new Promise(async (resolve, reject) => {
+      return contract.execute.sendTransaction(
+          saiProxy.address,
+          action,
+          tx,
+          async (err, hash) => {
+            if (err) reject(err)
+
+            const data = await this.getTransactionReceipt(hash)
+            resolve(data)
+          }
+        )
+    })
+  }
+
   transferOwnership(cup, from) {
     const defty = blockchain.objects.deftyWrap.address
     const contract = blockchain.objects.tub
-    if (!contract || ! defty) return console.error('Failed to load Contracts', contract)
+    if (!contract || !defty) return console.error('Failed to load Contracts', contract)
 
     const tx = { from, value: 0 }
     return new Promise(async (resolve, reject) => {
@@ -154,7 +182,26 @@ export class System {
     })
   }
 
+  proveProxyOwnership(cup, proxy, from) {
+    const contract = blockchain.objects.deftyWrap
+    if (!contract) return console.error('Failed to load DeftyWrap', contract)
+    const tx = {
+      from,
+      value: 0
+    }
+    return new Promise(async (resolve, reject) => {
+      return contract.prooveProxyOwnerShip
+        .sendTransaction(toBytes32(cup), proxy, tx, async (err, hash) => {
+          if (err) reject(err)
+
+          const data = await this.getTransactionReceipt(hash)
+          resolve(data)
+        })
+    })
+  }
+
   proveOwnership(cup, from) {
+    console.log('called proveOwnership instead')
     const contract = blockchain.objects.deftyWrap
     if (!contract) return console.error('Failed to load DeftyWrap', contract)
     const tx = { from, value: 0 }

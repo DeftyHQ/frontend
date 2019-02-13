@@ -30,29 +30,28 @@ class CupPanel extends React.Component {
 
   cupAction(cup) {
     const { action, actionTitle } = this.props
-    if (cup.type === CUP_TYPES.MODERN) {
-      return (
-        <div className={styles.newCupAction}>
-         <div>
-          <Typography variant="caption">This is CDP belongs to your proxy</Typography>
-          <Typography variant="caption">You will soon be able to wrap it!</Typography>
-         </div>
-          <Button
-            size="small"
-            color="primary"
-            variant="outlined"
-            disabled
-            onClick={
-              () => {
-                debugger
-                this.action(cup)
-              }
-            }>
-            Wrap
-          </Button>
-        </div>
-      )
-    }
+    // if (cup.type === CUP_TYPES.MODERN) {
+    //   return (
+    //     <div className={styles.newCupAction}>
+    //      <div>
+    //       <Typography variant="caption">This is CDP belongs to your proxy</Typography>
+    //       <Typography variant="caption">You will soon be able to wrap it!</Typography>
+    //      </div>
+    //       <Button
+    //         size="small"
+    //         color="primary"
+    //         variant="outlined"
+    //         disabled
+    //         onClick={
+    //           () => {
+    //             this.action(cup)
+    //           }
+    //         }>
+    //         Wrap
+    //       </Button>
+    //     </div>
+    //   )
+    // }
 
     return (
       <Button

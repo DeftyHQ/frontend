@@ -18,7 +18,7 @@ import styles from './styles.module.css'
 
 class StepsWrap extends React.Component {
   state = {
-    activeStep: 0,
+    activeStep: 1,
     subtitle: `
       To trade a CDP with 0x you need to wrap the CDP into an NFT.
       For the moment this is done in 3 successive different steps.

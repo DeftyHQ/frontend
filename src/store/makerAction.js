@@ -1,3 +1,4 @@
+import uniqBy from 'lodash.uniqby'
 import Maker from '@makerdao/dai'
 
 import { System } from 'lib/scd/system'
@@ -20,22 +21,30 @@ export const MKR = {
   NFT_FILTER: 'NFT_GET_WRAPPED'
 }
 
-export function initSystem() {
+export function initSystem(window) {
   return async (dispatch) => {
     dispatch({ type: MKR.INIT_START })
     try {
+      const system = new System()
       const instance = new Maker('browser')
       await instance.authenticate()
-      const system = new System()
+
+      // Use window to pass instance, since store triggers
+      // Symbol to string Error
+      const proxyAddr = await instance.service('proxy').getProxyAddress();
+      window.MAKER = { instance }
+
 
       dispatch({
         type: MKR.INIT_SUCCESS,
         payload: {
           system,
-          instance,
+          proxyAddr
+          // instance,
         }
       })
     } catch (err) {
+      console.warn('initSystem:', err)
       dispatch({
         type: MKR.INIT_ERROR,
         payload: { err }
@@ -44,15 +53,15 @@ export function initSystem() {
   }
 }
 
-export function setCups(lad) {
+export function setCups(lad, window) {
   return async (dispatch, getState) => {
     dispatch({ type: MKR.CUPS_START })
-    const { system, instance } = getState().maker
-    const proxy = await instance.service('proxy').getProxyAddress()
+    const { system, proxyAddr } = getState().maker
+
     let promiseCups = []
     try {
-      const legacyCups = await system.getCupsFromApi(lad, proxy)
-      const newCups = await system.getCupsFromChain(proxy)
+      const legacyCups = await system.getCupsFromApi(lad, proxyAddr)
+      const newCups = await system.getCupsFromChain(proxyAddr)
       promiseCups = [...legacyCups, ...newCups ]
     } catch(err) {
       console.error('Error in setCups():', err)
@@ -72,20 +81,21 @@ export function setCups(lad) {
       try {
         nft = await system.getNFTs(lad, lad)
         wrappedCups = await system.getCupByToken(nft, lad)
-      } catch {
+      } catch (err) {
         console.debug('User has no Wrapped cups')
       }
 
       promiseCups = [ ...promiseCups, ...wrappedCups ]
 
       const cups = await Promise.all(promiseCups)
-        .then(cups => filterCups(cups, lad, proxy, defty))
-        .then(cups => setType(cups, lad, proxy, defty, nft))
+        .then(cups => filterCups(cups, lad, proxyAddr, defty))
+        .then(cups => setType(cups, lad, proxyAddr, defty, nft))
         // @TODO: double request with system.getCups...
         // should remove once we determine which info and format
         // we really want for a cup.
+        .then(cups => uniqBy(cups, 'id'))
         .then(cups => {
-          const promises = cups.map(cup => getCupDetails(cup, instance))
+          const promises = cups.map(cup => getCupDetails(cup, window.MAKER.instance))
           return Promise.all(promises)
         })
 

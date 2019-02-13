@@ -40,7 +40,7 @@ export const getCup = id => {
           avail_eth: cup[3][6],
           liq_price: cup[3][7]
         };
-        resolve({block: cup[0].toNumber(), cupData});
+        resolve({block: cup[0].toNumber(), id: cupData.id, cupData });
       } else {
         reject(e);
       }

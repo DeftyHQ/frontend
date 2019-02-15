@@ -1,9 +1,9 @@
+
+import web3 from "api/web3"
+import * as settings from 'api/settings.json';
 import * as blockchain from 'api/blockchain';
 import * as daisystem from 'api/dai';
 
-import * as settings from 'api/settings.json';
-import { fetchCups } from 'api';
-import web3 from "api/web3"
 import {
   toBigNumber,
   toBytes32,
@@ -53,7 +53,7 @@ export class System {
   getCupsFromApi = (lad) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const cupIds = await fetchCups(lad)
+        const cupIds = await daisystem.fetchCups(lad)
         const promisesCups = cupIds.map(cup => this.getCup(parseInt(cup.id, 16)))
         resolve(promisesCups)
       } catch (err) {

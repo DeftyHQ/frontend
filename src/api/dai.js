@@ -1,8 +1,8 @@
-
-import * as blockchain from "api/blockchain";
-import {fromWei, toChecksumAddress, toBytes32 } from "utils/helpers";
+import { request } from 'graphql-request'
 
 import * as settings from "api/settings";
+import * as blockchain from "api/blockchain";
+import { fromWei, toChecksumAddress, toBytes32 } from "utils/helpers";
 
 // export const calculateLiquidationPrice = (par, per, mat, skr, dai) => {
 //   return wdiv(wmul(wmul(dai, par), mat), wmul(skr, per));
@@ -70,41 +70,66 @@ export const getCupsFromService = (network, lad) => {
   });
 }
 
+export function fetchCups(account) {
+  const getCupsQuery = `
+    query AllCups($lad: String!) {
+      allCups(
+        first: 50,
+        condition: {
+          deleted: false
+        },
+        filter: {
+          lad: {
+            in: [$lad]
+          }
+        },
+        orderBy: RATIO_ASC
+      ) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          endCursor
+        }
+        nodes {
+          id
+          lad
+          art
+          ink
+          ratio
+          actions(first: 5) {
+            nodes {
+              act
+              time
+            }
+          }
+        }
+      }
+    }
+  `
+  const URL = settings.chain['kovan'].service
+  const params = {
+    lad: account
+  }
+
+  return request(URL, getCupsQuery, params)
+    .then(data => data.allCups.nodes)
+    .then(data => (
+      data.map(node => {
+        // Mark difference between CDP's belonging to an account or a proxy
+        node.isLegacy = node.lad === params.lad ? true : false
+        return node
+      })
+    ))
+}
+
+
 export const getCupHistoryFromService = (network, cupId) => {
   return new Promise((resolve, reject) => {
     getFromService(network, `{ getCup(id: ${cupId}) { actions { nodes { act arg guy tx time ink art per pip } } } }`)
     .then(r => resolve(r.data.getCup ? r.data.getCup.actions.nodes : null), e => reject(e))
   });
 }
-
-// export const futureRap = (cup, age, chi, rhi, tax, fee) => {
-//   return  wmul(
-//             wmul(
-//               cup.ire,
-//               rhi
-//             ),
-//             toWei(
-//               fromWei(
-//                 wmul(
-//                   tax,
-//                   fee
-//                 )
-//               ).pow(age)
-//             )
-//           ).minus(
-//             wmul(
-//               wmul(
-//                 cup.art,
-//                 chi
-//               ),
-//               toWei(
-//                 fromWei(
-//                   tax
-//                 ).pow(age)
-//               )
-//             )
-//           ).round(0);
-// }
 
 export const getContracts = (proxyRegistry, address) => {
   return new Promise((resolve, reject) => {

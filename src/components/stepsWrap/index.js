@@ -12,13 +12,13 @@ import {
   Fade,
 } from '@material-ui/core'
 
-import { STATUS, proveOwnership, transferOwnership, wrap } from 'store/deftyAction'
+import { proveOwnership, transferOwnership, wrap } from 'store/deftyAction'
 
 import styles from './styles.module.css'
 
 class StepsWrap extends React.Component {
   state = {
-    activeStep: 1,
+    activeStep: 0,
     subtitle: `
       To trade a CDP with 0x you need to wrap the CDP into an NFT.
       For the moment this is done in 3 successive different steps.
@@ -163,7 +163,7 @@ class StepsWrap extends React.Component {
 const mapDispatchToProps = dispatch => ({
   proveOwnership: cup => dispatch(proveOwnership(cup)),
   transferOwnership: cup => dispatch(transferOwnership(cup)),
-  wrap: cup => dispatch(wrap(cup)),
+  wrap: cup => dispatch(wrap(cup, window)),
 })
 
 export default connect(

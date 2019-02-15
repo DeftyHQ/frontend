@@ -79,7 +79,7 @@ export const transferOwnership = (cup) => {
   }
 }
 
-export const wrap = (cup) => {
+export const wrap = (cup, window) => {
   return async (dispatch, getState) => {
     const { system } = getState().maker
     const { address } = getState().network
@@ -89,7 +89,7 @@ export const wrap = (cup) => {
       await system.wrap(id, address)
       dispatch({ type: DEFTY.WRAP_SUCCESS })
       // Refresh cups
-      dispatch(setCups(address))
+      dispatch(setCups(address, window))
     } catch (err) {
       console.warn('actions', err)
       dispatch({ type: DEFTY.WRAP_ERROR })
@@ -101,12 +101,13 @@ export const unWrap = (cup) => {
   return async (dispatch, getState) => {
     const { system } = getState().maker
     const { address } = getState().network
-    const { nft } = cup
+    const { nftId } = cup
+    debugger
     dispatch({
       type: DEFTY.UNWRAP_START
     })
     try {
-      await system.unwrap(nft, address)
+      await system.unwrapToProxy(nftId, address)
       dispatch({ type: DEFTY.UNWRAP_SUCCESS })
     } catch (err) {
       console.warn('actions', err)

@@ -4,7 +4,12 @@ import * as daisystem from './utils/dai-system';
 import * as settings from './settings.json';
 import { fetchCups } from 'api';
 import web3 from "./utils/web3"
-import {toBigNumber, fromHex, toBytes32, methodSig, addressToBytes32} from './utils/helpers';
+import {
+  toBigNumber,
+  toBytes32,
+  methodSig,
+  addressToBytes32,
+} from './utils/helpers';
 
 export class System {
   fromBlock = null
@@ -19,27 +24,12 @@ export class System {
     blockchain.loadObject('deftywrap', settings.chain[network].deftyProxyWrap, 'deftyWrap' )
   }
 
-  // setMyCupsFromChain = (keepTrying = false, callbacks = [], firstLoad = false) => {
-  //   if (this.rootStore.profile.proxy) {
-  //     this.tub.cupsLoading = true;
-  //     this.setCups('new', keepTrying, callbacks, firstLoad);
-  //   } else {
-  //     this.tub.cupsLoading = false;
-  //   }
-  // }
-  //
-  // setMyLegacyCupsFromChain = (callbacks = [], firstLoad = false) => {
-  //   this.setCups('legacy', false, callbacks, firstLoad);
-  // }
 
   setCups = async (lad) => {
     let promisesCups = await this.getCupsFromChain(lad, this.fromBlock);
     const currentLad = cup => lad.toLowerCase() === cup.cupData.lad.toLowerCase()
-    Promise.all(promisesCups)
+    return Promise.all(promisesCups)
       .then(cups => cups.filter(currentLad))
-      .then((cups) => {
-        console.debug(cups)
-      })
   }
 
   getCup = (id) => {
@@ -60,10 +50,10 @@ export class System {
     //   }
   }
 
-  getCupsFromApi = (lad, proxy) => {
+  getCupsFromApi = (lad) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const cupIds = await fetchCups(lad, proxy)
+        const cupIds = await fetchCups(lad)
         const promisesCups = cupIds.map(cup => this.getCup(parseInt(cup.id, 16)))
         resolve(promisesCups)
       } catch (err) {
@@ -184,13 +174,13 @@ export class System {
 
   proveProxyOwnership(cup, proxy, from) {
     const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.error('Failed to load DeftyWrap', contract)
+    if (!contract) return console.debug('Failed to load DeftyWrap', contract)
     const tx = {
       from,
       value: 0
     }
     return new Promise(async (resolve, reject) => {
-      return contract.prooveProxyOwnerShip
+      return contract.proveProxyOwnership
         .sendTransaction(toBytes32(cup), proxy, tx, async (err, hash) => {
           if (err) reject(err)
 
@@ -201,9 +191,8 @@ export class System {
   }
 
   proveOwnership(cup, from) {
-    console.log('called proveOwnership instead')
     const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.error('Failed to load DeftyWrap', contract)
+    if (!contract) return console.debug('Failed to load DeftyWrap', contract)
     const tx = { from, value: 0 }
     return new Promise(async (resolve, reject) => {
       return contract.proveOwnership
@@ -232,6 +221,21 @@ export class System {
     })
   }
 
+  unwrapToProxy(nftId, from) {
+    const contract = blockchain.objects.deftyWrap
+    if (!contract) return console.error('Failed to load DeftyWrap', contract)
+
+    const tx = { from, value: 0 }
+    return new Promise(async (resolve, reject) => {
+      return contract.unwrapToProxy
+        .sendTransaction(nftId, tx, async (err, hash) => {
+          if (err) reject(err)
+          const data = await this.getTransactionReceipt(hash)
+          resolve(data)
+        })
+    })
+  }
+
   unwrap(nft, from) {
     const contract = blockchain.objects.deftyWrap
     if (!contract) return console.error('Failed to load DeftyWrap', contract)
@@ -247,15 +251,12 @@ export class System {
     })
   }
 
-  getNFTs(address, from) {
+  getNFT(address, index = 0, from) {
     const contract = blockchain.objects.deftyWrap
     if (!contract) return console.error('Failed to load DeftyWarp', contract)
 
     const tx = { from, value: 0 }
     return new Promise(async (resolve, reject) => {
-      // @TODO:
-      // iterate calls on index to retreive more than one.
-      const index = 0
       return contract.tokenOfOwnerByIndex.call(
         address,
         toBigNumber(index),
@@ -268,22 +269,25 @@ export class System {
     })
   }
 
-  // receive BN
-  getCupByToken(nft, from) {
+  getNFTs(address, from) {
+    const promisesNFTs = [ ...Array(10).keys() ].map(index => (
+      this.getNFT(address, index, from)
+    ))
+    return Promise.all(promisesNFTs)
+  }
+
+  getCupByToken(nftId, from) {
     const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.error('Failed to load DeftyWarp', contract)
+    if (!contract) return console.debug('Failed to load DeftyWarp', contract)
 
     const tx = { from, value: 0 }
     return new Promise(async (resolve, reject) => {
-      // @TODO:
-      // iterate calls on index to retreive more than one.
-      const index = 0
       return contract.getCupId.call(
-        toBigNumber(nft),
+        toBigNumber(nftId),
         tx,
-        async (err, data) => {
+        async (err, cupId) => {
           if (err) reject(err)
-          resolve([ this.getCup(parseInt(data, 16)) ])
+          resolve([ this.getCup(parseInt(cupId, 16)) ])
         }
       )
     })

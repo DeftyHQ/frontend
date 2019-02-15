@@ -60,11 +60,11 @@ export function setCups(lad, window) {
 
     let promiseCups = []
     try {
-      const legacyCups = await system.getCupsFromApi(lad, proxyAddr)
+      const legacyCups = await system.getCupsFromApi(lad)
       const newCups = await system.getCupsFromChain(proxyAddr)
       promiseCups = [...legacyCups, ...newCups ]
     } catch(err) {
-      console.error('Error in setCups():', err)
+      console.debug('Error in setCups():', err)
       dispatch({
         type: MKR.CUPS_ERROR,
         payload: { err }
@@ -121,7 +121,7 @@ function filterCups(cups, lad, proxy, defty) {
   return cups.filter(isOwner)
 }
 
-function setType(cups, lad, proxy, defty, nft) {
+function setType(cups, lad, proxy, defty, nftId) {
   return cups.map(cup => {
     let type;
     const owner = cup.cupData.lad.toLowerCase()
@@ -131,7 +131,7 @@ function setType(cups, lad, proxy, defty, nft) {
       type = CUP_TYPES.MODERN
     } else if (owner === defty.toLowerCase()) {
       type = CUP_TYPES.WRAPPED
-      cup.nft = nft
+      cup.nftId = nftId
     }
     cup.type = type
     return cup

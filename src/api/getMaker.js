@@ -8,7 +8,7 @@ const config = {
 const URL = config.staging
 
 const getCupsQuery = `
-  query AllCups($lad: String!, $proxy: String!) {
+  query AllCups($lad: String!) {
     allCups(
       first: 50,
       condition: {
@@ -16,7 +16,7 @@ const getCupsQuery = `
       },
       filter: {
         lad: {
-          in: [$proxy, $lad]
+          in: [$lad]
         }
       },
       orderBy: RATIO_ASC
@@ -44,10 +44,9 @@ const getCupsQuery = `
   }
 `
 
-export function fetchCups(account, proxy) {
+export function fetchCups(account) {
   const params = {
-    lad: account,
-    proxy: proxy
+    lad: account
   }
   return request(URL, getCupsQuery, params)
     .then(data => data.allCups.nodes)

@@ -4,7 +4,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import NumberFormat from 'react-number-format';
 import {
   Button,
-  CircularProgress,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
@@ -12,7 +11,6 @@ import {
   Typography
 } from '@material-ui/core'
 
-import { CUP_TYPES } from 'store/makerAction'
 import styles from './styles.module.css'
 
 class CupPanel extends React.Component {
@@ -28,43 +26,8 @@ class CupPanel extends React.Component {
     }
   }
 
-  cupAction(cup) {
-    const { action, actionTitle } = this.props
-    // if (cup.type === CUP_TYPES.MODERN) {
-    //   return (
-    //     <div className={styles.newCupAction}>
-    //      <div>
-    //       <Typography variant="caption">This is CDP belongs to your proxy</Typography>
-    //       <Typography variant="caption">You will soon be able to wrap it!</Typography>
-    //      </div>
-    //       <Button
-    //         size="small"
-    //         color="primary"
-    //         variant="outlined"
-    //         disabled
-    //         onClick={
-    //           () => {
-    //             this.action(cup)
-    //           }
-    //         }>
-    //         Wrap
-    //       </Button>
-    //     </div>
-    //   )
-    // }
-
-    return (
-      <Button
-        size="small"
-         color="primary"
-         onClick={() => action(cup)}>
-         { actionTitle }
-      </Button>
-    )
-  }
-
   render() {
-    const { cup, index } = this.props
+    const { cup, index, action, actionTitle } = this.props
     const { expanded } = this.state
 
     return (
@@ -83,33 +46,8 @@ class CupPanel extends React.Component {
        </ExpansionPanelSummary>
        <ExpansionPanelDetails
           className={styles.cardContent}>
-          {/*<Typography>
-            <span className={styles.name}>Collateral</span>
-            <NumberFormat
-              value={cup.ink}
-              displayType={'text'}
-              decimalScale={2}
-              fixedDecimalScale={true}
-              thousandSeparator={true}
-              isNumericString/>
-          </Typography>
-          <Typography>
-            <span className={styles.name}>Ratio</span>
-            <NumberFormat
-              value={cup.ratio}
-              displayType={'text'}
-              decimalScale={2}
-              fixedDecimalScale={true}
-              thousandSeparator={true}
-              isNumericString/>
-          </Typography>
-          <Typography>
-            <span className={styles.name}>Art</span>
-            <span className={styles.value}>{cup.art}</span>
-          </Typography>*/}
           <Typography>
             <span className={styles.name}>Debt value</span>
-            {/*<span className={styles.value}>{cup.debtValue.toString()}</span>*/}
             <NumberFormat
               value={cup.debtValue.toString()}
               displayType={'text'}
@@ -137,7 +75,12 @@ class CupPanel extends React.Component {
           </Typography>
        </ExpansionPanelDetails>
        <ExpansionPanelActions>
-         { this.cupAction(cup) }
+         <Button
+           size="small"
+            color="primary"
+            onClick={() => action(cup)}>
+            { actionTitle }
+         </Button>
        </ExpansionPanelActions>
      </ExpansionPanel>
     )

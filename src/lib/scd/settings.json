@@ -11,7 +11,7 @@
       "saiProxyCreateAndExecute": "0xadb7c74bce932fc6c27dda3ac2344707d2fbb0e6",
       "saiTub": "0xa71937147b55deb8a530c7229c442fd3f31b7db2",
       "deftyWrap": "0x8D94AeE129A0BbBf430bfA2c5dB961A43f747780",
-      "deftyProxyWrap": "0x27aC989a513D17c68Ed41Ea447bCD337beD0A97D"
+      "deftyProxyWrap": "0x9FB2eCfEe64625826750076f1920650EC6eb551c"
     },
     "main": {
       "nodeURL": "https://mainnet.infura.io/v3/078596535bf243c6996d2ac196563d49",

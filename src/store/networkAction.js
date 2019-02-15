@@ -1,5 +1,5 @@
 
-import * as blockchain from 'lib/scd/utils/blockchain'
+import * as blockchain from 'api/blockchain'
 
 export const NETWORK = {
   START: 'NETWORK_CONNECTION_START',

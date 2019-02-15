@@ -1,11 +1,10 @@
 // Libraries
 import Promise from "bluebird";
 
-// Utils
-import * as blockchain from "./blockchain";
-import {fromWei, toChecksumAddress, toBytes32 } from "./helpers";
+import * as blockchain from "api/blockchain";
+import {fromWei, toChecksumAddress, toBytes32 } from "utils/helpers";
 
-import * as settings from "../settings";
+import * as settings from "api/settings";
 
 // export const calculateLiquidationPrice = (par, per, mat, skr, dai) => {
 //   return wdiv(wmul(wmul(dai, par), mat), wmul(skr, per));

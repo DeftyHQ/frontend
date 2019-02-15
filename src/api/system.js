@@ -1,15 +1,15 @@
-import * as blockchain from './utils/blockchain';
-import * as daisystem from './utils/dai-system';
+import * as blockchain from 'api/blockchain';
+import * as daisystem from 'api/dai-system';
 
-import * as settings from './settings.json';
+import * as settings from 'api/settings.json';
 import { fetchCups } from 'api';
-import web3 from "./utils/web3"
+import web3 from "api/web3"
 import {
   toBigNumber,
   toBytes32,
   methodSig,
   addressToBytes32,
-} from './utils/helpers';
+} from 'utils/helpers';
 
 export class System {
   fromBlock = null

@@ -3,7 +3,7 @@ import React from "react";
 // import jazzicon from "jazzicon";
 
 // Utils
-import web3 from "./web3";
+import web3 from "api/web3";
 
 // export const WAD = web3.toBigNumber(web3.toWei(1));
 // export const BIGGESTUINT256 = web3.toBigNumber(2).pow(256).minus(1);

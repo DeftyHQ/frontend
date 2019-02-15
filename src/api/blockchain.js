@@ -1,30 +1,25 @@
-// Libraries
 import Promise from "bluebird";
-
-// Utils
-import web3 from "./web3"
+import web3 from "api/web3"
 
 const promisify = Promise.promisify;
-const schema = {};
+const schema = {
+  deftywrap:                require('abi/DeftyProxyWrap.json'),
+  dsproxy:                  require('abi/dsproxy'),
+  saiProxyCreateAndExecute: require('abi/saiProxyCreateAndExecute.json'),
+  saivaluesaggregator:      require('abi/saivaluesaggregator'),
+  tub:                      require('abi/saitub'),
+};
 
-// schema.deftywrap = require("abi/DeftyWrap.json");
-schema.deftywrap = require("abi/DeftyProxyWrap.json");
-schema.dsproxy = require("../abi/dsproxy");
-schema.saiProxyCreateAndExecute = require('../abi/saiProxyCreateAndExecute.json');
-schema.tub = require("../abi/saitub");
-schema.saivaluesaggregator = require("../abi/saivaluesaggregator");
 
-export const objects = {
-}
+export const objects = {}
 
 export const getAccounts = () => {
   return promisify(web3.eth.getAccounts)();
 }
 
-// Changed
 export const loadObject = (type, address, label = null) => {
   const object = web3.eth.contract(schema[type].abi).at(address);
-  console.debug('Loading Contract', label, object)
+  console.debug(`Loading Contract ${label}`)
   if (label) {
     objects[label] = object;
   }
@@ -206,7 +201,7 @@ export const setWebClientProvider = provider => {
   return web3.setWebClientProvider(provider);
 }
 
-export const {getWebClientProviderName} = require("./web3");
+export const {getWebClientProviderName} = require("api/web3");
 
 export const checkNetwork = (actualIsConnected, actualNetwork) => {
   return new Promise((resolve, reject) => {

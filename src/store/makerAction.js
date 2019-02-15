@@ -1,8 +1,8 @@
 import uniqBy from 'lodash.uniqby'
 import Maker from '@makerdao/dai'
 
-import { System } from 'lib/scd/system'
-import * as blockchain from '../lib/scd/utils/blockchain'
+import { System } from 'api/system'
+import * as blockchain from 'api/blockchain'
 
 export const CUP_TYPES = {
   WRAPPED: 'WRAPPED',

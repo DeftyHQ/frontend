@@ -1,0 +1,34 @@
+.root {
+  display: inline-block;
+  position: relative;
+  padding: 0.4em;
+}
+
+.root.error {
+  color: #d63d26;
+}
+
+.smMessage {
+  position: absolute;
+  right: 2.5em;
+  bottom: -2em;
+  background-color: rgba(0, 0, 0, 0.87);
+  padding: 4px;
+  border-radius: 3px;
+  color: #fff !important;
+}
+
+.root.copyEnabled:hover {
+  cursor: pointer;
+  background-color: #eee;
+  border-radius: 4px;
+}
+
+.root.copyEnabled:hover .copyIcon {
+  visibility: visible;
+}
+
+.copyIcon {
+  visibility: hidden;
+  height: 0.6em !important;
+}

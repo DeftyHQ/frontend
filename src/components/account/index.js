@@ -1,7 +1,7 @@
 import React from 'react'
 import { Typography } from '@material-ui/core'
 
-import EthAddress from 'lib/react-eth-address'
+import { EthAddress } from 'components'
 import { getJazziconIcon } from 'utils/helpers'
 import styles from './styles.module.css'
 

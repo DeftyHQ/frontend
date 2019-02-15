@@ -59,7 +59,7 @@ class Home extends React.Component {
                 cups={this.props.cups}
                 nfts={this.props.nfts}
                 address={this.props.address}
-                network={this.props.network}
+                network={this.props.networkName}
                 isLoading={this.props.isCupsLoading}
                 unWrap={this.props.unWrap}
                />
@@ -93,7 +93,7 @@ class Home extends React.Component {
 
 const mapStateToProps = ({ network, maker }) => ({
   address: network.address,
-  network: network.network,
+  networkName: network.networkName,
   status: network.status,
   cups: maker.cups,
   nfts: maker.nfts,

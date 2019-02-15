@@ -1,10 +1,13 @@
 import { NETWORK } from './networkAction'
+import { getNetworkName } from 'utils/networkName'
 
 export default (
   state = {
-    status: '',
-    address: 'empty',
-    web3: {}
+    status: null,
+    address: '',
+    networkName: '',
+    networkId: null,
+    web3: null
   },
   action
 ) => {
@@ -16,7 +19,8 @@ export default (
         web3: action.payload.web3,
         accounts: action.payload.accounts,
         address: action.payload.address,
-        network: action.payload.network
+        networkId: action.payload.network,
+        networkName: getNetworkName(action.payload.network)
       }
     case NETWORK.PENDING:
       return {

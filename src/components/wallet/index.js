@@ -72,7 +72,9 @@ class Wallet extends React.Component {
     const { cups, nfts, address, network, isLoading } = this.props
     return (
       <div className={styles.fullHeight}>
-        <Account address={address} network={network}/>
+        <Account
+          address={address}
+          network={network}/>
         <section className={styles.stretch}>
           <div className={styles.listHeader}>
             <Typography variant="subtitle1">My CDP's</Typography>

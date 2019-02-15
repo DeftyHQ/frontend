@@ -22,15 +22,15 @@ export function initNetwork() {
       await blockchain.setWebClientProvider(web3);
 
       const accounts = await blockchain.getAccounts()
+      const network = await blockchain.getNetwork()
       const address = accounts[0]
-      // const network = web3.version.network
 
       dispatch({
         type: NETWORK.SUCCESS,
         payload: {
           address,
           accounts,
-          // network,
+          network,
           web3
         }
       })

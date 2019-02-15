@@ -3,7 +3,6 @@ import { Typography, Grid } from '@material-ui/core'
 import CopyIcon from '@material-ui/icons/FileCopyOutlined'
 import PropTypes from 'prop-types'
 import copy from 'copy-to-clipboard'
-import copySVG from './copy.svg'
 
 import styles from './styles.module.css'
 

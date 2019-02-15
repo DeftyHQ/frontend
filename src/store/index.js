@@ -1,13 +1,16 @@
-import { createStore, applyMiddleware, compose } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
-
-import rootReducer from './rootReducer'
+import { default as maker } from 'store/makerReducer'
+import { default as network } from 'store/networkReducer'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default function configureStore(initialState={}) {
   return createStore(
-    rootReducer,
+    combineReducers({
+      maker,
+      network
+    }),
     composeEnhancers(
       applyMiddleware(thunk)
     ),

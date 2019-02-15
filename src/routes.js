@@ -1,5 +1,5 @@
 
-import Home from './Home'
+import Home from 'containers/Home'
 
 export default {
   root: { path: '/', component: Home, name: 'root' },

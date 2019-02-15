@@ -1,7 +1,7 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 
-import Header from './Header'
+import Header from 'containers/Header'
 import Routes from './routes'
 
 import styles from './App.module.css'

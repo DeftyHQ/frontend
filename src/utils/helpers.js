@@ -1,8 +1,6 @@
-// Libraries
-import React from "react";
-// import jazzicon from "jazzicon";
 
-// Utils
+import React from "react";
+import jazzicon from "jazzicon";
 import web3 from "api/web3";
 
 // export const WAD = web3.toBigNumber(web3.toWei(1));
@@ -165,8 +163,8 @@ export const jsNumberForAddress = address => {
   return parseInt(address.slice(2, 10), 16);
 }
 
-// export const getJazziconIcon = (address, size) => {
-//   return <div className="identicon" style={ {width: `${size}px`, height: `${size}px`, overflow: "hidden", borderRadius: "50%" } } dangerouslySetInnerHTML={ {__html: jazzicon(size, jsNumberForAddress(address)).innerHTML} } />
-// }
+export const getJazziconIcon = (address, size) => {
+  return <div className="identicon" style={ {width: `${size}px`, height: `${size}px`, overflow: "hidden", borderRadius: "50%" } } dangerouslySetInnerHTML={ {__html: jazzicon(size, jsNumberForAddress(address)).innerHTML} } />
+}
 
 export const {toBigNumber , toWei, fromWei, isAddress, toAscii, toHex, fromHex, toChecksumAddress} = web3;

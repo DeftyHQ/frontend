@@ -2397,7 +2397,7 @@ bluebird@^2.9.34:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-2.11.0.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
   integrity sha1-U0uQM8AiyVecVro7Plpcqvu2UOE=
 
-bluebird@^3.5.0, bluebird@^3.5.3:
+bluebird@^3.5.0:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.3.tgz#7d01c6f9616c9a51ab0f8c549a79dfe6ec33efa7"
   integrity sha512-/qKPUQlaW1OyR51WeCPBvRnAlnZFUJkCSG5HzGnuIqhgyJtF+T94lFnn33eiazjRm2LAHVy2guNnaq48X9SJuw==
@@ -4265,6 +4265,11 @@ es-to-primitive@^1.1.1, es-to-primitive@^1.2.0:
     is-callable "^1.1.4"
     is-date-object "^1.0.1"
     is-symbol "^1.0.2"
+
+es6-promisify@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/es6-promisify/-/es6-promisify-6.0.1.tgz#6edaa45f3bd570ffe08febce66f7116be4b1cdb6"
+  integrity sha512-J3ZkwbEnnO+fGAKrjVpeUAnZshAdfZvbhQpqfIH9kSAspReRC4nJnu8ewm55b4y9ElyeuhCTzJD0XiH8Tsbhlw==
 
 escape-html@~1.0.3:
   version "1.0.3"

@@ -1,5 +1,3 @@
-// Libraries
-import Promise from "bluebird";
 
 import * as blockchain from "api/blockchain";
 import {fromWei, toChecksumAddress, toBytes32 } from "utils/helpers";

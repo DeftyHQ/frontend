@@ -1,7 +1,6 @@
-import Promise from "bluebird";
-import web3 from "api/web3"
+import { promisify } from 'es6-promisify'
+import web3 from 'api/web3'
 
-const promisify = Promise.promisify;
 const schema = {
   deftywrap:                require('abi/DeftyProxyWrap.json'),
   dsproxy:                  require('abi/dsproxy'),

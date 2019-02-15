@@ -1,5 +1,5 @@
 import * as blockchain from 'api/blockchain';
-import * as daisystem from 'api/dai-system';
+import * as daisystem from 'api/dai';
 
 import * as settings from 'api/settings.json';
 import { fetchCups } from 'api';

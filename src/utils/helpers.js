@@ -6,10 +6,12 @@ import web3 from "api/web3";
 // export const WAD = web3.toBigNumber(web3.toWei(1));
 // export const BIGGESTUINT256 = web3.toBigNumber(2).pow(256).minus(1);
 
-var padLeft = (string, chars, sign) => {
+
+const padLeft = (string, chars, sign) => {
   return new Array(chars - string.length + 1).join(sign ? sign : "0") + string;
 };
 
+export const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 // CALLED
 export const toBytes32 = (x, prefix = true) => {
   let y = web3.toHex(x);

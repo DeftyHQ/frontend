@@ -1,14 +1,16 @@
 
-import web3 from "api/web3"
-import * as settings from 'api/settings.json';
-import * as blockchain from 'api/blockchain';
-import * as daisystem from 'api/dai';
+import web3 from 'api/web3'
+import * as settings from 'api/settings.json'
+import * as blockchain from 'api/blockchain'
+import * as daisystem from 'api/dai'
+import * as deftysystem from  'api/defty'
 
 import {
   toBigNumber,
   toBytes32,
   methodSig,
   addressToBytes32,
+  sleep,
 } from 'utils/helpers';
 
 export class System {
@@ -25,14 +27,14 @@ export class System {
   }
 
 
-  setCups = async (lad) => {
+  async setCups(lad) {
     let promisesCups = await this.getCupsFromChain(lad, this.fromBlock);
     const currentLad = cup => lad.toLowerCase() === cup.cupData.lad.toLowerCase()
     return Promise.all(promisesCups)
       .then(cups => cups.filter(currentLad))
   }
 
-  getCup = (id) => {
+  getCup(id) {
     return daisystem.getCup(id)
 
     // cupData: {
@@ -50,7 +52,7 @@ export class System {
     //   }
   }
 
-  getCupsFromApi = (lad) => {
+  getCupsFromApi(lad) {
     return new Promise(async (resolve, reject) => {
       try {
         const cupIds = await daisystem.fetchCups(lad)
@@ -62,7 +64,7 @@ export class System {
     })
   }
 
-  getCupsFromChain = (lad, promisesCups = []) => {
+  getCupsFromChain(lad, promisesCups = []) {
     const fromBlock = this.fromBlock
     // if (!blockchain.getProviderUseLogs()) return promisesCups;
     return new Promise((resolve, reject) => {
@@ -99,201 +101,81 @@ export class System {
     });
   }
 
-  /*
-    @TODO: move to own service
-  */
-
-  async getTransactionReceiptPromise(hash) {
-    // here we just promisify getTransactionReceipt function for convenience
-    return new Promise(((resolve, reject) => {
-        web3.eth.getTransactionReceipt(hash, function(err, data) {
-            if (err !== null) reject(err);
-            else resolve(data);
-        });
-    }));
-  }
-
-  async getTransactionReceipt(hash) {
-    let receipt = null;
-    while (receipt === null) {
-      // we are going to check every second if transation is mined or not, once it is mined we'll leave the loop
-      receipt = await this.getTransactionReceiptPromise(hash);
-      await sleep(1000);
-    }
-    return receipt;
-  };
 
   // DSProxy calls SaiProxy which calls Tub
-  transferProxyOwnership(cupId, proxy, from) {
-    blockchain.loadObject("dsproxy", proxy, "proxy")
-    const contract = blockchain.objects.proxy
-    const defty = blockchain.objects.deftyWrap
-    const saiProxy = blockchain.objects.saiProxyCreateAndExecute
-    const tub = blockchain.objects.tub
-    if (!contract || !defty || !tub || !saiProxy) return console.error('transferProxyOwnership: Failed to load Contracts')
-
-    const tx = { from, value: 0 }
-    const newOwner = defty.address
-    const action = `${methodSig(`give(address,bytes32,address)`)}${addressToBytes32(tub.address, false)}${toBytes32(cupId, false)}${addressToBytes32(newOwner, false)}`;
-
-    return new Promise(async (resolve, reject) => {
-      return contract.execute.sendTransaction(
-          saiProxy.address,
-          action,
-          tx,
-          async (err, hash) => {
-            if (err) reject(err)
-
-            const data = await this.getTransactionReceipt(hash)
-            resolve(data)
-          }
-        )
-    })
-  }
-
-  transferOwnership(cup, from) {
-    const defty = blockchain.objects.deftyWrap.address
-    const contract = blockchain.objects.tub
-    if (!contract || !defty) return console.error('Failed to load Contracts', contract)
-
-    const tx = { from, value: 0 }
-    return new Promise(async (resolve, reject) => {
-      return contract.give.sendTransaction(
-          toBytes32(cup),
-          defty,
-          tx,
-          async (err, hash) => {
-            if (err) reject(err)
-
-            const data = await this.getTransactionReceipt(hash)
-            resolve(data)
-          }
-        )
-    })
-  }
-
-  proveProxyOwnership(cup, proxy, from) {
-    const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.debug('Failed to load DeftyWrap', contract)
-    const tx = {
-      from,
-      value: 0
+  async transferProxyOwnership(cupId, proxy, from) {
+    try {
+      const hash = await deftysystem.transferProxyOwnership(cupId, proxy, from)
+      return blockchain.getTransactionReceipt(hash)
+    } catch (err) {
+      return err
     }
-    return new Promise(async (resolve, reject) => {
-      return contract.proveProxyOwnership
-        .sendTransaction(toBytes32(cup), proxy, tx, async (err, hash) => {
-          if (err) reject(err)
-
-          const data = await this.getTransactionReceipt(hash)
-          resolve(data)
-        })
-    })
   }
 
-  proveOwnership(cup, from) {
-    const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.debug('Failed to load DeftyWrap', contract)
-    const tx = { from, value: 0 }
-    return new Promise(async (resolve, reject) => {
-      return contract.proveOwnership
-        .sendTransaction(toBytes32(cup), tx, async (err, hash) => {
-          if (err) reject(err)
-
-          const data = await this.getTransactionReceipt(hash)
-          resolve(data)
-        })
-    })
+  async transferOwnership(cupId, from) {
+    try {
+      const hash = await deftysystem.transferOwnership(cupId, from)
+      return blockchain.getTransactionReceipt(hash)
+    } catch (err) {
+      return err
+    }
   }
 
-  wrap(cup, from) {
-    const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.error('Failed to load DeftyWrap', contract)
-
-    const tx = { from, value: 0 }
-    return new Promise(async (resolve, reject) => {
-      return contract.wrap
-        .sendTransaction(toBytes32(cup), tx, async (err, hash) => {
-          if (err) reject(err)
-
-          const data = await this.getTransactionReceipt(hash)
-          resolve(data)
-        })
-    })
+  async proveProxyOwnership(cupId, proxy, from) {
+    try {
+      const hash = await deftysystem.proveProxyOwnership(cupId, proxy, from)
+      return blockchain.getTransactionReceipt(hash)
+    } catch (err) {
+      return err
+    }
   }
 
-  unwrapToProxy(nftId, from) {
-    const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.error('Failed to load DeftyWrap', contract)
-
-    const tx = { from, value: 0 }
-    return new Promise(async (resolve, reject) => {
-      return contract.unwrapToProxy
-        .sendTransaction(nftId, tx, async (err, hash) => {
-          if (err) reject(err)
-          const data = await this.getTransactionReceipt(hash)
-          resolve(data)
-        })
-    })
+  async proveOwnership(cupId, from) {
+    try {
+      const hash = await deftysystem.proveOwnership(cupId, from)
+      return blockchain.getTransactionReceipt(hash)
+    } catch (err) {
+      return err
+    }
   }
 
-  unwrap(nft, from) {
-    const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.error('Failed to load DeftyWrap', contract)
-
-    const tx = { from, value: 0 }
-    return new Promise(async (resolve, reject) => {
-      return contract.unwrap
-        .sendTransaction(nft, tx, async (err, hash) => {
-          if (err) reject(err)
-          const data = await this.getTransactionReceipt(hash)
-          resolve(data)
-        })
-    })
+  async wrap(cupId, from) {
+    try {
+      const hash = await deftysystem.wrap(cupId, from)
+      return blockchain.getTransactionReceipt(hash)
+    } catch (err) {
+      return err
+    }
   }
 
-  getNFT(address, index = 0, from) {
-    const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.error('Failed to load DeftyWarp', contract)
+  async unwrapToProxy(nftId, from) {
+    try {
+      const hash = await deftysystem.unwrapToProxy(nftId, from)
+      return blockchain.getTransactionReceipt(hash)
+    } catch (err) {
+      return err
+    }
+  }
 
-    const tx = { from, value: 0 }
-    return new Promise(async (resolve, reject) => {
-      return contract.tokenOfOwnerByIndex.call(
-        address,
-        toBigNumber(index),
-        tx,
-        async (err, data) => {
-          if (err) reject(err)
-          resolve(data)
-        }
-      )
-    })
+  async unwrap(nftId, from) {
+    try {
+      const hash = await deftysystem.unwrap(nftId, from)
+      return blockchain.getTransactionReceipt(hash)
+    } catch (err) {
+      return err
+    }
   }
 
   getNFTs(address, from) {
-    const promisesNFTs = [ ...Array(10).keys() ].map(index => (
-      this.getNFT(address, index, from)
-    ))
-    return Promise.all(promisesNFTs)
+    return deftysystem.getNFTs(address, from)
   }
 
-  getCupByToken(nftId, from) {
-    const contract = blockchain.objects.deftyWrap
-    if (!contract) return console.debug('Failed to load DeftyWarp', contract)
-
-    const tx = { from, value: 0 }
-    return new Promise(async (resolve, reject) => {
-      return contract.getCupId.call(
-        toBigNumber(nftId),
-        tx,
-        async (err, cupId) => {
-          if (err) reject(err)
-          resolve([ this.getCup(parseInt(cupId, 16)) ])
-        }
-      )
-    })
+  async getCupByToken(nftId, from) {
+    try {
+      const cupId = await deftysystem.getCupByToken(nftId, from)
+      return[ this.getCup(parseInt(cupId, 16)) ]
+    } catch (err) {
+      return err
+    }
   }
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }

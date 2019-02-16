@@ -102,7 +102,6 @@ export const unWrap = (cup) => {
     const { system } = getState().maker
     const { address } = getState().network
     const { nftId } = cup
-    debugger
     dispatch({
       type: DEFTY.UNWRAP_START
     })

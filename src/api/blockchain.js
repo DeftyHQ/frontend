@@ -1,5 +1,7 @@
 import { promisify } from 'es6-promisify'
+
 import web3 from 'api/web3'
+import { sleep } from 'utils/helpers'
 
 const schema = {
   deftywrap:                require('abi/DeftyProxyWrap.json'),
@@ -61,9 +63,19 @@ export const getTransaction = tx => {
   return promisify(web3.eth.getTransaction)(tx);
 }
 
-export const getTransactionReceipt = tx => {
-  return promisify(web3.eth.getTransactionReceipt)(tx);
-}
+// export const getTransactionReceipt = tx => {
+//   return promisify(web3.eth.getTransactionReceipt)(tx);
+// }
+
+export const getTransactionReceipt = async (hash) => {
+  let receipt = null;
+  while (receipt === null) {
+    // we are going to check every second if transation is mined or not, once it is mined we'll leave the loop
+    receipt = await promisify(web3.eth.getTransactionReceipt)(hash);
+    await sleep(1000);
+  }
+  return receipt;
+};
 
 export const getTransactionCount = address => {
   return promisify(web3.eth.getTransactionCount)(address, "pending");
